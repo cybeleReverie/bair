@@ -104,7 +104,7 @@ function Turtledove:init(x, y)
 
 	self.isEnemy = true
 
-	ewo:addEntity(self)
+	ewo:add(self)
 end
 
 function Turtledove:spitBileBall()

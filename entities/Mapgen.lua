@@ -29,7 +29,7 @@ function Mapgen:init()
 		Signal.emit('spawnEncounter', util.rnd({{50, 'obstacle'}, {50, 'enemy'}}))
 	end)
 
-	ewo:addEntity(self)
+	ewo:add(self)
 end
 
 function Mapgen:buildFloor(x, y)

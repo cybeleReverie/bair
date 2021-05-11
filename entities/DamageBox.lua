@@ -14,7 +14,11 @@ function DamageBox:init(x, y, w, h, dmg, decay, velx, vely)
 
 	self.filter = function(item, other) return 'cross' end
 
-	ewo:addEntity(self)
+	ewo:add(self)
+end
+
+function DamageBox:collide(other)
+	ewo:remove(self)
 end
 
 return DamageBox

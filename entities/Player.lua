@@ -51,7 +51,7 @@ function Player:init(x, y)
 	self.spritesheet = img.bair
 	self.spr = spr.bair.walk
 
-	ewo:addEntity(self)
+	ewo:add(self)
 end
 
 function Player:update(dt)
