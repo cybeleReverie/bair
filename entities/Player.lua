@@ -105,7 +105,7 @@ function Player:update(dt)
 		end
 	end
 
-	if self.vel.y == 0 and not onGround then
+	if Input:down('jump') and self.vel.y == 0 and not onGround then
 		--hover at max jump height
 		self:hover()
 	end
