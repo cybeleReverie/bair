@@ -5,6 +5,7 @@ local img = {
 	bair = love.graphics.newImage('gfx/bair.png'),
 	turtledove = love.graphics.newImage('gfx/turtledove.png'),
 	bileBall = love.graphics.newImage('gfx/bileBall.png')
+	--groundTiles = love.graphics.newImage('gfx/groundTiles.png')
 }
 
 local grid = {
@@ -29,9 +30,15 @@ local sprite = {
 	}
 }
 
+local tile = {
+	-- ground = tile.newSet(img.groundTiles, 24, 24, {
+	-- 	rocks = {1, 1},
+	-- })
+}
+
 local font = {
 	romulus = love.graphics.newFont('gfx/Romulus.ttf', 16),
 	alagard = love.graphics.newFont('gfx/alagard.ttf', 16)
 }
 
-return {img, sprite, font}
+return {img, sprite, tile, font}

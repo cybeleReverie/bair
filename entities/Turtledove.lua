@@ -25,6 +25,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self.vel.x = 0
 				self.vel.y = 0
+				self.speed = 8
 
 				self.timer:after(math.random(2, 4),
 					function()
@@ -32,6 +33,9 @@ function Turtledove:init(x, y)
 					end)
 
 				self.spr = spr.turtledove.idle
+			end,
+			update = function(self)
+				self:moveTowardsPoint(self.gx, self.gy)
 			end
 		},
 		Attack = {

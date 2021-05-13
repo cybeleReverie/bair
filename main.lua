@@ -5,6 +5,7 @@ input = require 'libs/boipushy'
 tiny = require 'libs/tiny'
 bump = require 'libs/bump'
 anim = require 'libs/anim8'
+tile = require 'libs/tile'
 Timer = require 'libs/timer'
 Camera = require 'libs/camera'
 Signal = require 'libs/signal'
@@ -12,7 +13,7 @@ vec = require 'libs/vec'
 Gamestate = require 'libs/gamestate'
 
 --graphics
-img, spr, font = unpack(require 'gfx/sprites')
+img, spr, tile, font = unpack(require 'gfx/sprites')
 
 --gamestates
 gs = {
