@@ -1,0 +1,3 @@
+local spell = {}
+
+return spell
