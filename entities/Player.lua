@@ -1,3 +1,8 @@
+local attack = require 'moves/attacks'
+local spell = require 'moves/spells'
+
+--
+
 local Player = class 'Player'
 
 function Player:init(x, y)
@@ -26,12 +31,12 @@ function Player:init(x, y)
 	self.canAttack = true
 	self.isAttacking = false
 
-	--moveset
-	self.moves = {
-		{}, {}, {},
-		{}, {}, {},
-		{}, {}, {}
-	}
+	--moves
+	self.attacks = {[5] = attack.basic}
+	self.curAttack = 5
+
+	self.spells = {}
+	self.curSpell = 1
 
 	--private timer instance
 	self.timer = Timer.new()
@@ -96,13 +101,7 @@ function Player:update(dt)
 
 	--player controls
 	if Input:pressed('jump') and self.isAttacking == false then
-		if onGround then
-			self.vel.y = -self.jumpHeight
-			self.hov = self.maxHov
-		else
-			--hover if jumping midair
-			self:hover()
-		end
+		self:jump(onGround)
 	end
 
 	if Input:down('jump') and self.vel.y == 0 and not onGround then
@@ -119,16 +118,7 @@ function Player:update(dt)
 	end
 
 	if Input:pressed('attack') and self.canAttack and onGround then
-		self.timer:after(0.29, function()
-			DamageBox:new(self.x + self.w + 32, self.y + 4, 16, 24, self.pow, 0.2, 140)
-		end)
-
-		self.canAttack = false
-		self.isAttacking = true
-
-		self.timer:after(self.attackRecharge, function() self.canAttack = true end)
-
-		self.spr = spr.bair.attack
+		self:attack()
 	end
 
 	Signal.register('attackComplete', function()
@@ -146,6 +136,28 @@ function Player:update(dt)
 
 		self.spr = spr.bair.fall
 	end
+end
+
+--verbs
+function Player:hover()
+	if self.hov > 0 then
+		self.gravity = false
+		self.vel.y = 0
+	end
+end
+
+function Player:jump(grounded)
+	if grounded then
+		self.vel.y = -self.jumpHeight
+		self.hov = self.maxHov
+	else
+		--hover if jumping midair
+		self:hover()
+	end
+end
+
+function Player:attack()
+	self.attacks[self.curAttack](self)
 end
 
 --collision callback
@@ -186,12 +198,6 @@ function Player:checkHeadBump()
 	end
 end
 
-function Player:hover()
-	if self.hov > 0 then
-		self.gravity = false
-		self.vel.y = 0
-	end
-end
 
 function Player:closeEnough()
 	for i = 1, 6 do

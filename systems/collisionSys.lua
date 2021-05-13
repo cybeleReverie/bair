@@ -15,6 +15,7 @@ function bumpSys:process(e, dt)
 		end
 	end
 
+	--remove if offscreen
 	if e.x <= -32 or e.y <= -32 or e.x >= SCREEN_W + 350 or e.y >= SCREEN_H + 32 then
 		if e.name ~= 'Player' then
 			ewo:remove(e)

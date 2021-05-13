@@ -19,6 +19,10 @@ function enemyAI:atGoalPos()
 	return self.x == self.gx and self.y == self.gy
 end
 
+function enemyAI:stop()
+	self.vel.x, self.vel.y = 0, 0
+end
+
 --state machine functions
 function enemyAI:switchState(state)
 	local s = self.states[state]

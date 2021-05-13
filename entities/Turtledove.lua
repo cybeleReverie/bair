@@ -81,8 +81,8 @@ function Turtledove:init(x, y)
 				--move towards attack spot
 				self:moveTowardsPoint(self.gx, self.gy)
 
-				if math.abs(self.x - self.gx) < 6 and self.gx ~= self.home.x then
-					self.vel.x, self.vel.y = 0, 0
+				if self:atGoalPos() and self.gx ~= self.home.x then
+					self:stop()
 					self:switchState('Retreat')
 				end
 			end},

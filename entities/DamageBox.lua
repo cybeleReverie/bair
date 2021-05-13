@@ -18,7 +18,7 @@ function DamageBox:init(x, y, w, h, dmg, decay, velx, vely)
 end
 
 function DamageBox:collide(other)
-	ewo:remove(self)
+	if other.name ~= 'DamageBox' then ewo:remove(self) end
 end
 
 return DamageBox
