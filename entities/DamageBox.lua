@@ -1,18 +1,28 @@
 local DamageBox = class 'DamageBox'
 
-function DamageBox:init(x, y, w, h, dmg, decay, velx, vely)
-	self.x = x
-	self.y = y
-	self.w = w
-	self.h = h
-	self.dmg = dmg
-	self.vel = vec.new(velx or 0, vely or 0)
+function DamageBox:init(params)
+	self.x = params.x
+	self.y = params.y
+	self.w = params.w
+	self.h = params.h
+	self.dmg = params.dmg
+	self.vel = vec.new(params.velx or 0, params.vely or 0)
 
-	if decay > 0 then
-		Timer.after(decay, function() ewo:remove(self) end)
+	self.ghost = true
+
+	if params.decay then
+		Timer.after(params.decay, function() ewo:remove(self) end)
 	end
 
-	self.filter = function(item, other) return 'cross' end
+	if params.spr then
+		self.spr = params.spr
+		if params.spritesheet then
+			self.spritesheet = params.spritesheet
+			self.spr:gotoFrame(1)
+			self.spr:resume()
+		end
+		self.draw = true
+	end
 
 	ewo:add(self)
 end

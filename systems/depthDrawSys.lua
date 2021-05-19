@@ -1,8 +1,18 @@
-local drawSys = tiny.processingSystem()
-drawSys.filter = tiny.filter('draw&!depth')
-drawSys.isDrawSys = true
+local depthDrawSys = tiny.sortedProcessingSystem()
+depthDrawSys.filter = tiny.requireAll('draw', 'depth')
+depthDrawSys.isDrawSys = true
 
-function drawSys:process(e, dt)
+function depthDrawSys:onAdd(e)
+	depthDrawSys:onModify() --sort draw order by depth key
+end
+
+function depthDrawSys:compare(e1, e2)
+	--sort depth by y position
+	local depth1, depth2 = e1.depth or 0, e2.depth or 0
+	return e1.y - depth1 > e2.y - depth2
+end
+
+function depthDrawSys:process(e, dt)
 	love.graphics.setColor(1, 1, 1)
 
 	if e.spr then
@@ -30,4 +40,4 @@ function drawSys:process(e, dt)
 	end
 end
 
-return drawSys
+return depthDrawSys

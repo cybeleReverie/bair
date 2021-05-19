@@ -1,5 +1,5 @@
 local Turtledove = class 'Turtledove'
-Turtledove:with(enemyAI)
+Turtledove:with(enemyAI, fsm)
 
 function Turtledove:init(x, y)
 	self.x = x
@@ -23,9 +23,7 @@ function Turtledove:init(x, y)
 		Idle = {
 			callback = function(self)
 				--stay still
-				self.vel.x = 0
-				self.vel.y = 0
-				self.speed = 8
+				self:stopMoving()
 
 				self.timer:after(math.random(2, 4),
 					function()
@@ -35,16 +33,15 @@ function Turtledove:init(x, y)
 				self.spr = spr.turtledove.idle
 			end,
 			update = function(self)
-				self:moveTowardsPoint(self.gx, self.gy)
+				self:moveTowardsPoint(self.goal.x, self.goal.y)
 			end
 		},
 		Attack = {
 			--ground rush
 			{callback = function(self)
 				self.timer:after(0.2, function()
-					self.gx = 24
-					self.gy = self.home.y
-					self.speed = math.random(280, 400)
+					self:setGoalPos(24, self.home.y)
+					self:setSpeed(math.random(280, 400))
 
 					self.spr = spr.turtledove.rush
 				end)
@@ -53,10 +50,10 @@ function Turtledove:init(x, y)
 			end,
 			update = function(self)
 				--move towards attack spot
-				self:moveTowardsPoint(self.gx, self.gy)
+				self:moveTowardsPoint(self.goal.x, self.goal.y)
 
-				if self:atGoalPos() and self.gx ~= self.home.x then
-					self.vel.x, self.vel.y = 0, 0
+				if self:atGoalPos() and self.goal.x ~= self.home.x then
+					self:stopMoving()
 					self:switchState('Retreat')
 				end
 			end},
@@ -64,12 +61,11 @@ function Turtledove:init(x, y)
 			--air rush
 			{callback = function(self)
 				self.timer:after(0.2, function()
-					self.gx = 24
-					self.gy = self.home.y
+					self:setGoalPos(24, self.home.y)
 
 					--switch from ground to air
-					self.timer:tween(0.25, self, {gy = 48}, 'cubic')
-					self.speed = math.random(280, 400)
+					self.timer:tween(0.25, self.goal, {y = 48}, 'cubic')
+					self:setSpeed(math.random(280, 400))
 
 					self.spr = spr.turtledove.rush
 				end)
@@ -83,10 +79,10 @@ function Turtledove:init(x, y)
 			end,
 			update = function(self)
 				--move towards attack spot
-				self:moveTowardsPoint(self.gx, self.gy)
+				self:moveTowardsPoint(self.goal.x, self.goal.y)
 
-				if self:atGoalPos() and self.gx ~= self.home.x then
-					self:stop()
+				if self:atGoalPos() and self.goal.x ~= self.home.x then
+					self:stopMoving()
 					self:switchState('Retreat')
 				end
 			end},
@@ -104,7 +100,7 @@ function Turtledove:init(x, y)
 		}
 	}
 
-	self.attackWeights = {{33, 1}, {33, 2}, {33, 3}}
+	self.attackWeights = {[1] = 33, [2] = 33, [3] = 33}
 
 	self.isEnemy = true
 
@@ -112,9 +108,14 @@ function Turtledove:init(x, y)
 end
 
 function Turtledove:spitBileBall()
-	local d = DamageBox:new(self.x - 8, self.y + 4, 8, 5, 1, 0, -300, 0)
-	d.spr = img.bileBall
-	d.draw = true
+	local d = DamageBox:new{
+		x = self.x - 8,
+		y = self.y + 4,
+		w = 8, h = 5,
+		dmg = 1,
+		velx = -350,
+		spr = img.bileBall
+	}
 end
 
 return Turtledove

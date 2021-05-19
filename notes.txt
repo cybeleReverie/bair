@@ -1,1 +1,6 @@
 ---todo---
+priority 1:
+-ground tiles
+
+priority 2:
+-implement far claw

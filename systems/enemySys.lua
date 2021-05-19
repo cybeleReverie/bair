@@ -3,58 +3,72 @@ enemySys.filter = tiny.requireAll('isEnemy')
 enemySys.isUpdateSys = true
 
 function enemySys:onAdd(e)
+	e.goal = {x = e.home.x, y = e.home.y}
+
 	--collision callback
 	e.collide = function(this, other)
-		if other.name == 'DamageBox' then --generalize later
+		if other.name == 'DamageBox' then
 			--take damage
 			this.damage = other.dmg
 		end
 	end
 
+	--private timer instance
+	e.timer = Timer.new()
+
 	--common states
+	e.states._switchCallback = function(this, state) --called by FSM upon switching state
+		--clear all timers & tweens
+		this.timer:clear()
+	end
+
+	e.states.Attack.callback = function(this)
+		local s = this.states['Attack'][lume.weightedchoice(this.attackWeights)]
+
+		this.states._switchCallback(this)
+
+		this.state = s
+		if s.callback then s.callback(this) end
+	end
+
 	e.states.Enter = { --consolidate w/ retreat?
-		callback = function(self)
+		callback = function(this)
 			--reset goal coords to home
-			e.gx = e.home.x
-			e.gy = e.home.y
+			this:setGoalPos(this.home.x, this.home.y)
 
 			--switch to idle sprite
-			e.spr = spr[string.lower(e.name)].idle
+			this.spr = spr[string.lower(this.name)].idle
 		end,
-		update = function(self)
+		update = function(this)
 			--move towards home
-			self:moveTowardsPoint(self.home.x, self.home.y)
+			this:moveTowardsPoint(this.home.x, this.home.y)
 
-			if self:atGoalPos() then
-				self:switchState('Idle')
+			if this:atGoalPos() then
+				this:switchState('Idle')
 			end
 		end
 	}
 
 	e.states.Retreat = {
-		callback = function(self)
-			self.gx = self.home.x
-			self.gy = self.home.y
-			self.speed = 200
+		callback = function(this)
+			this:setGoalPos(this.home.x, this.home.y)
+			this:setSpeed(200)
 
-			e.spr = spr[string.lower(e.name)].idle
+			this.spr = spr[string.lower(this.name)].idle
 		end,
-		update = function(self)
-			self:moveTowardsPoint(self.gx, self.gy, self.speed)
+		update = function(this)
+			this:moveTowardsPoint(this.goal.x, this.goal.y, this.speed)
 
-			if self:atGoalPos() then
-				self:switchState('Idle')
+			if this:atGoalPos() then
+				this:switchState('Idle')
 			end
 		end
 	}
 
-	--private timer instance
-	e.timer = Timer.new()
-
 	--bump filter
 	e.filter = function(item, other)
-		if other.name == 'Player' then return 'cross'
-		elseif other.name == 'DamageBox' then return 'cross' end
+		if other.name == 'Player' 	then return 'cross'
+		elseif other.ghost == true	then return 'cross' end
 	end
 
 	--switch to enter state
@@ -63,7 +77,7 @@ end
 
 function enemySys:process(e, dt)
 	--update state
-	if e.state.update then e.state.update(e) end
+	e:updateState()
 
 	--retreat if hurt
 	if e.invincible then e:switchState('Retreat') end
@@ -74,7 +88,7 @@ end
 
 function enemySys:onRemove(e)
 	Timer.after(math.random(4, 6), function()
-		Signal.emit('spawnEncounter', util.rnd({{75, 'obstacle'}, {25, 'enemy'}}))
+		Signal.emit('spawnEncounter', lume.weightedchoice({obstacle = 75, enemy = 25}))
 	end)
 end
 

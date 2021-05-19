@@ -8,13 +8,15 @@ function Block:init(x, y, velx, vely)
 
 	self.vel = vec.new(velx or 0, vely or 0)
 
+	self.spr = tile.ground.stone
 	self.draw = true
-	self.spr = img.block
 
 	self.isBlock = true
 
 	self.filter = function(item, other)
-		if other.name == 'Player' then return 'cross' end
+		if other.name == 'Player'	then return 'cross'
+		elseif other.ghost == true	then return 'cross'
+		end
 	end
 
 	ewo:add(self)

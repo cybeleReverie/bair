@@ -4,6 +4,7 @@ local spell = require 'moves/spells'
 --
 
 local Player = class 'Player'
+Player:with(fsm)
 
 function Player:init(x, y)
 	self.x = x
@@ -27,12 +28,14 @@ function Player:init(x, y)
 	self.maxMag = 3		self.mag = self.maxMag
 
 	self.jumpHeight = 290
-	self.attackRecharge = 1.1
 	self.canAttack = true
 	self.isAttacking = false
 
-	--moves
-	self.attacks = {[5] = attack.basic}
+	--moveset
+	self.attacks = {
+		[5] = attack.basic,
+		[6] = attack.farclaw
+	}
 	self.curAttack = 5
 
 	self.spells = {}
@@ -41,11 +44,130 @@ function Player:init(x, y)
 	--private timer instance
 	self.timer = Timer.new()
 
+	--fsm states
+	local atkExit
+
+	self.states = {
+		Walk = {
+			callback = function(self)
+				self.hov = self.maxHov
+				self.gravity = true
+
+				self.spr = spr.bair.walk
+			end,
+			update = function(self)
+				self.vel.y = 0
+
+				if self:checkOnGround() == false then
+					self:switchState('InAir')
+				end
+
+				if Input:pressed('jump') then
+					self.vel.y = -self.jumpHeight
+					self:switchState('InAir')
+				end
+
+				if Input:pressed('attack') and self.canAttack == true then
+					self:switchState('Attack')
+				end
+			end
+		},
+		InAir = {
+			callback = function(self)
+				self.gravity = true
+			end,
+			update = function(self)
+				if self:checkHeadBump() then
+					self.vel.y = 0
+				end
+
+				if self:checkOnGround() then
+					self:switchState('Walk')
+				end
+
+				if Input:pressed('jump') or (Input:down('jump') and self.vel.y == 0) then
+					if self.hov > 0 and not self:checkHeadBump() then self:switchState('Hover') end
+				end
+
+				if Input:released('jump') then
+					--shorten jump height if jumping
+					if self.vel.y < 0 then self.vel.y = self.vel.y / 1.8 end
+				end
+
+				if self.vel.y < 0 then
+					self.spr = spr.bair.jump
+				elseif self.vel.y > 0 then
+					self.spr = spr.bair.fall
+				end
+			end
+		},
+		Hover = {
+			callback = function(self)
+				self.gravity = false
+				self.vel.y = 0
+
+				self.spr = spr.bair.hover
+			end,
+			update = function(self, dt)
+				if self.hov <= 0 or Input:released('jump') then
+					self:switchState('InAir')
+				end
+
+				if self:checkOnGround() then
+					self:switchState('Walk')
+				end
+
+				self.hov = math.max(0, self.hov - dt)
+			end
+		},
+		Attack = {
+			callback = function(self)
+				self.curAttack.enter(self)
+				atkExit = self.curAttack.exit
+				self.canAttack = false
+
+				self.spr = self.curAttack.sprite
+			end,
+			update = function(self)
+				if self.curAttack.update then
+					self.curAttack.update(self)
+				end
+
+				if Input:released('attack') then
+					if atkExit then
+						self.curAttack.exit(self)
+						atkExit = nil
+					end
+				end
+			end,
+			exit = function(self)
+				self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
+
+				self.curAttack.sprite:gotoFrame(1)
+			end
+		},
+
+		-- _switchCallback = function(self, state) --called by FSM upon switching state
+		-- 	--clear all timers & tweens
+		-- 	self.timer:clear()
+		-- end
+	}
+
+	self:switchState('Walk')
+
+	--signal registry
+	Signal.register('attackComplete', function()
+		self.isAttacking = false
+		self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
+
+		self.curAttack.sprite:gotoFrame(1)
+	end)
+
 	--bump filter
 	self.filter = function(item, other)
-		if other.isEnemy 					then return 'cross'
-		elseif other.isBlock				then return 'slide'
-		elseif other.name == 'DamageBox'	then return 'cross' end
+		if other.isEnemy 			then return 'cross'
+		elseif other.isBlock		then return 'slide'
+		elseif other.ghost == true	then return 'cross' end
 	end
 
 	--graphics stuff
@@ -60,104 +182,23 @@ function Player:init(x, y)
 end
 
 function Player:update(dt)
-	--[[try to keep update loop as stateless as possible.
-	separate graphics from game logic as much as possible;
-	put all graphics stuff at the bottom of each function/code block
-	]]
-
-	local onGround = self:checkOnGround()
-	local isHovering = self.gravity == false and self.vel.y == 0
-
 	self.timer:update(dt)
-
-	if onGround then
-		self.vel.y = 0
-		self.hov = self.maxHov
-
-		if not self.isAttacking then self.spr = spr.bair.walk end
-	end
-
-	--limit hovering
-	if isHovering then
-		self.hov = math.max(0, self.hov - dt)
-
-		self.spr = spr.bair.hover
-	end
-
-	if self.hov <= 0 then
-		self.gravity = true
-	end
+	self:updateState(dt)
 
 	--block collision
 	if self:checkHBlockCollision() then
-		self.gravity = true
-
 		if self:closeEnough() == false then self.damage = 1 end
 	end
 
-	if self:checkHeadBump() then
-		self.vel.y = 0
+	--select attack
+	if self.state ~= self.states.Attack then
+		local atk = 5
+
+		if Input:down('right') then atk = 6 end
+		if Input:down('left') then atk = 4 end
+
+		self.curAttack = self.attacks[atk]
 	end
-
-	--player controls
-	if Input:pressed('jump') and self.isAttacking == false then
-		self:jump(onGround)
-	end
-
-	if Input:down('jump') and self.vel.y == 0 and not onGround then
-		--hover at max jump height
-		self:hover()
-	end
-
-	if Input:released('jump') then
-		--enable gravity if hovering
-		self.gravity = true
-
-		--shorten jump height if jumping
-		if self.vel.y < 0 then self.vel.y = self.vel.y / 1.8 end
-	end
-
-	if Input:pressed('attack') and self.canAttack and onGround then
-		self:attack()
-	end
-
-	Signal.register('attackComplete', function()
-		self.isAttacking = false
-		spr.bair.attack:gotoFrame(1)
-	end)
-
-	--graphics stuff
-	if self.vel.y < 0 then
-		self.spr = spr.bair.jump
-	elseif self.vel.y > 0 then
-		if self.isAttacking then
-			Signal.emit('attackComplete')
-		end
-
-		self.spr = spr.bair.fall
-	end
-end
-
---verbs
-function Player:hover()
-	if self.hov > 0 then
-		self.gravity = false
-		self.vel.y = 0
-	end
-end
-
-function Player:jump(grounded)
-	if grounded then
-		self.vel.y = -self.jumpHeight
-		self.hov = self.maxHov
-	else
-		--hover if jumping midair
-		self:hover()
-	end
-end
-
-function Player:attack()
-	self.attacks[self.curAttack](self)
 end
 
 --collision callback
@@ -178,6 +219,7 @@ function Player:checkOnGround()
 			return true
 		end
 	end
+	return false
 end
 
 function Player:checkHBlockCollision(x, y)
@@ -197,7 +239,6 @@ function Player:checkHeadBump()
 		end
 	end
 end
-
 
 function Player:closeEnough()
 	for i = 1, 6 do

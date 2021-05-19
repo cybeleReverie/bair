@@ -15,33 +15,23 @@ function enemyAI:moveTowardsPoint(x, y)
 	end
 end
 
-function enemyAI:atGoalPos()
-	return self.x == self.gx and self.y == self.gy
+function enemyAI:setGoalPos(x, y)
+	self.goal.x, self.goal.y = x, y
 end
 
-function enemyAI:stop()
+function enemyAI:setSpeed(spd)
+	self.speed = spd
+end
+
+function enemyAI:atGoalPos()
+	return self.x == self.goal.x and self.y == self.goal.y
+end
+
+function enemyAI:stopMoving()
 	self.vel.x, self.vel.y = 0, 0
 end
 
---state machine functions
-function enemyAI:switchState(state)
-	local s = self.states[state]
-
-	--clear all timers
-	self.timer:clear()
-
-	--choose random attack
-	if state == 'Attack' then
-		s = self.states[state][util.rnd(self.attackWeights)]
-	end
-
-	self.state = s
-
-	--call new state callback
-	if s.callback then s.callback(self) end
-end
-
---AI utilities
+--AI utility functions
 function enemyAI:distToPoint(x, y)
 	return math.abs(self.x - x) + math.abs(self.y - y)
 end

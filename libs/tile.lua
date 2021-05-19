@@ -1,12 +1,22 @@
 local tile = {}
 
 function tile.newSet(img, w, h, tiles)
-	local ts = {src = img}
+	local ts = {} --tileset
 	local ct
 
-	for i in ipairs(tiles) do
-		ct = tiles[i]
-		ts[ct] = love.graphics.newQuad(ct[1] * w - w, ct[2] * h - h, ct[3] or w, ct[4] or h, img)
+	for k, v in pairs(tiles) do
+		ct = tiles[k] --current tile
+		local tx, ty, tw, th = --current tile pos and dimensions
+			ct[1] * w - w,
+			ct[2] * h - h,
+			ct[3] or w,
+			ct[4] or h
+
+		--add new tile to sheet
+		ts[k] = {
+			tile = love.graphics.newQuad(tx, ty, tw, th, img),
+		 	sheet = img
+		}
 	end
 
 	return ts

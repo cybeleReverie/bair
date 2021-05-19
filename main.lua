@@ -4,6 +4,7 @@ class = require 'libs/class'
 input = require 'libs/boipushy'
 tiny = require 'libs/tiny'
 bump = require 'libs/bump'
+lume = require 'libs/lume'
 anim = require 'libs/anim8'
 tile = require 'libs/tile'
 Timer = require 'libs/timer'
@@ -27,7 +28,8 @@ require 'entities/entities'
 --initialize ECS and Bump world
 ewo = tiny.world(
 	require 'systems/drawSys',
-	require 'systems/collisionSys',
+	require 'systems/depthDrawSys',
+	require 'systems/bumpSys',
 	require 'systems/moveSys',
 	require 'systems/updateLoopSys',
 	require 'systems/healthSys',
@@ -49,6 +51,8 @@ function love.load()
 	Input:bind('z', 'jump')
 	Input:bind('x', 'attack')
 	Input:bind('escape', 'exit')
+	Input:bind('left', 'left')
+	Input:bind('right', 'right')
 	Input:bind('`', 'debug')
 
 	Gamestate.switch(gs.Game)
