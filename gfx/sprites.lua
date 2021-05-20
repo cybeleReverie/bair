@@ -26,7 +26,7 @@ local sprite = {
 		hover = anim.newAnimation(grid.bair('24-26', 1), 0.065),
 
 		attackBasic = anim.newAnimation(grid.bair('6-23', 1),
-			{['1-8'] = 0.058, ['9-18'] = 0.05}),
+			{['1-8'] = 0.058, ['9-18'] = 0.05}, 'pauseAtEnd'),
 
 		attackFarclaw = anim.newAnimation(grid.bair('29-39', 1),
 				{['1-5'] = 0.07, [6] = 5, ['7-11'] = 0.06}, 'pauseAtEnd'),

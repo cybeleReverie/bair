@@ -142,7 +142,11 @@ function Player:init(x, y)
 			exit = function(self)
 				self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
 			end
-		}
+		},
+		-- _switchCallback = function(self, state) --called by FSM upon switching state
+		-- 	clear all timers & tweens
+		-- 	self.timer:clear()
+		-- end
 	}
 
 	self:switchState('Walk')
