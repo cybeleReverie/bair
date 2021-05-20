@@ -45,15 +45,14 @@ function Player:init(x, y)
 	self.timer = Timer.new()
 
 	--fsm states
-	local atkExit
-
 	self.states = {
 		Walk = {
 			callback = function(self)
+				self.vel.y = 0
 				self.hov = self.maxHov
 				self.gravity = true
 
-				self.spr = spr.bair.walk
+				self:changeSprite(spr.bair.walk)
 			end,
 			update = function(self)
 				self.vel.y = 0
@@ -95,9 +94,9 @@ function Player:init(x, y)
 				end
 
 				if self.vel.y < 0 then
-					self.spr = spr.bair.jump
+					self:changeSprite(spr.bair.jump)
 				elseif self.vel.y > 0 then
-					self.spr = spr.bair.fall
+					self:changeSprite(spr.bair.fall)
 				end
 			end
 		},
@@ -106,7 +105,7 @@ function Player:init(x, y)
 				self.gravity = false
 				self.vel.y = 0
 
-				self.spr = spr.bair.hover
+				self:changeSprite(spr.bair.hover)
 			end,
 			update = function(self, dt)
 				if self.hov <= 0 or Input:released('jump') then
@@ -123,10 +122,10 @@ function Player:init(x, y)
 		Attack = {
 			callback = function(self)
 				self.curAttack.enter(self)
-				atkExit = self.curAttack.exit
+				self.atkExit = self.curAttack.exit
 				self.canAttack = false
 
-				self.spr = self.curAttack.sprite
+				self:changeSprite(self.curAttack.sprite)
 			end,
 			update = function(self)
 				if self.curAttack.update then
@@ -134,34 +133,19 @@ function Player:init(x, y)
 				end
 
 				if Input:released('attack') then
-					if atkExit then
+					if self.atkExit then
 						self.curAttack.exit(self)
-						atkExit = nil
+						self.atkExit = nil
 					end
 				end
 			end,
 			exit = function(self)
 				self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
-
-				self.curAttack.sprite:gotoFrame(1)
 			end
-		},
-
-		-- _switchCallback = function(self, state) --called by FSM upon switching state
-		-- 	--clear all timers & tweens
-		-- 	self.timer:clear()
-		-- end
+		}
 	}
 
 	self:switchState('Walk')
-
-	--signal registry
-	Signal.register('attackComplete', function()
-		self.isAttacking = false
-		self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
-
-		self.curAttack.sprite:gotoFrame(1)
-	end)
 
 	--bump filter
 	self.filter = function(item, other)
@@ -253,6 +237,15 @@ function Player:closeEnough()
 	end
 
 	return false
+end
+
+function Player:changeSprite(spr)
+	self.spr = spr
+
+	if self.spr.draw then
+		self.spr:gotoFrame(1)
+		self.spr:resume()
+	end
 end
 
 return Player

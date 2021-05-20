@@ -17,7 +17,7 @@ function Game:draw()
  	--move to HUD later
 	love.graphics.setColor(1, 0, 0)
 	love.graphics.print('HP: ' .. Game.player.hp .. '\nMP: ' .. Game.player.mp ..
-		'\nHOV: ' .. util.round(Game.player.hov, 1), 0, 136)
+		'\nHOV: ' .. lume.round(Game.player.hov, 1), 0, 136)
 end
 
 return Game

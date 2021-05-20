@@ -13,7 +13,6 @@ function util.newMatrix(w, h, def)
   return t
 end
 
---deep copy
 function util.deepCopy(orig)
     local orig_type = type(orig)
     local copy

@@ -244,6 +244,7 @@ end
 function Animation:gotoFrame(position)
   self.position = position
   self.timer = self.intervals[self.position]
+  return self
 end
 
 function Animation:pauseAtEnd()

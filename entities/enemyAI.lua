@@ -33,7 +33,7 @@ end
 
 --AI utility functions
 function enemyAI:distToPoint(x, y)
-	return math.abs(self.x - x) + math.abs(self.y - y)
+	return lume.distance(self.x, self.y, x, y)
 end
 
 return enemyAI

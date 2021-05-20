@@ -24,11 +24,13 @@ function DamageBox:init(params)
 		self.draw = true
 	end
 
-	ewo:add(self)
-end
+	if not params.persistOnCollide then
+		self.collide = function(self, other)
+			if not other.ghost then ewo:remove(self) end
+		end
+	end
 
-function DamageBox:collide(other)
-	if other.name ~= 'DamageBox' then ewo:remove(self) end
+	ewo:add(self)
 end
 
 return DamageBox

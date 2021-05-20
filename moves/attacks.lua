@@ -25,7 +25,7 @@ attack.basic = {
 --Farclaw
 local Reticle
 attack.farclaw = {
-	rechargeTime = 0.75,
+	rechargeTime = 1.5,
 	sprite = spr.bair.attackFarclaw,
 
 	enter = function(self)
@@ -34,28 +34,41 @@ attack.farclaw = {
 			y = self.y + self.h / 2 - 10,
 			w = 1,
 			h = 1,
-			vel = vec.new(110, 0),
+			vel = vec.new(135, 0),
 			ghost = true,
+			update = function(this)
+				if this.x > 320 then
+					ewo:remove(this) print 'bye'
+					self.curAttack.exit(self)
+				end
+			end,
 			spr = img.reticle,
 			draw = true,
 			depth = 10,
 		}
+		Reticle.this = Reticle
 
-		ewo:add(Reticle)
+		Timer.after(0.4, function() ewo:add(Reticle) end)
 	end,
 
 	exit = function(self)
-		local d = DamageBox:new{
-			x = Reticle.x - 40, y = Reticle.y - 15,
-			w = 10, h = 10,
-			dmg = self.pow,
-			decay = 0.16,
-			spr = spr.bair.clawEffect, spritesheet = img.clawEffect
-		}
+		if Reticle.x < 320 then
+			local d = DamageBox:new{
+				x = Reticle.x, y = Reticle.y - 14,
+				w = 24, h = 20,
+				dmg = self.pow,
+				decay = 0.16,
+				persistOnCollide = true,
+				spr = spr.bair.clawEffect, spritesheet = img.clawEffect
+			}
+			d.ox = 36
 
-		ewo:remove(Reticle)
+			ewo:remove(Reticle)
 
-		Timer.after(0.3, function() self:switchState('Walk') end)
+			self.spr:gotoFrame(7)
+		end
+
+		Timer.after(0.35, function() self:switchState('Walk') end)
 	end
 }
 
