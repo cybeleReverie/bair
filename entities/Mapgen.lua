@@ -13,11 +13,11 @@ function Mapgen:init()
 	Signal.register('spawnEncounter', function(encType)
 		if encType == 'obstacle' then
 			--build random obstacle
-			self:buildChunk(320, 12, self.chunks[math.random(#self.chunks)])
+			self:buildChunk(320, 12, self.chunks[random.num(#self.chunks)])
 
 			--set timer for next obstacle
-			Timer.after(math.random(self.encTimer[1], self.encTimer[2]), function()
-				Signal.emit('spawnEncounter', lume.weightedchoice({obstacle = 50, enemy = 50}))
+			Timer.after(random.num(self.encTimer[1], self.encTimer[2]), function()
+				Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 50, enemy = 50}))
 			end)
 		elseif encType == 'enemy' then
 			self:spawnEnemy()
@@ -26,7 +26,7 @@ function Mapgen:init()
 
 	--spawn first encounter
 	Timer.after(1, function()
-		Signal.emit('spawnEncounter', lume.weightedchoice({obstacle = 50, enemy = 50}))
+		Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 50, enemy = 50}))
 	end)
 
 	ewo:add(self)
@@ -54,8 +54,8 @@ function Mapgen:generateFloorTiles()
 	local xx, yy, r
 
 	--seed stone tiles
-	for i = 1, math.random(5) do
-		xx, yy = math.random(2, #floor - 1), math.random(2)
+	for i = 1, random.num(5) do
+		xx, yy = random.num(2, #floor - 1), random.num(2)
 		floor[xx][yy] = 2
 	end
 
@@ -87,7 +87,7 @@ function Mapgen:generateFloorTiles()
 				end
 
 				--if stone neighbors on both sides, adjust to solid stone or dirt
-				if nbU and nbR then ajt = math.random(2) end
+				if nbU and nbR then ajt = random.num(2) end
 			end
 
 			floor[i][j] = ajt
@@ -112,8 +112,8 @@ function Mapgen:buildFloor(x, y)
 
 			if floor[i][j] == 1 or floor[i][j] == 8 then
 				--add roots
-				if math.random(8) == 1 and i % 2 == 0 then
-					r = math.random(3)
+				if random.num(8) == 1 and i % 2 == 0 then
+					r = random.num(3)
 					if r == 1 then
 						if i < #floor and (floor[i + 1][j] == 1 or floor[i + 1][j] == 8) then
 							rt = 9

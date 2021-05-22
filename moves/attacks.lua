@@ -16,9 +16,7 @@ attack.basic = {
 			}
 		end)
 
-		Timer.after(0.964, function() self:switchState('Walk') end)
-
-		self.spr = spr.bair.attackBasic
+		Timer.after(spr.bair.attackBasic:getAnimDur(), function() self:switchState('Walk') end)
 	end
 }
 
@@ -73,7 +71,8 @@ attack.farclaw = {
 		end
 		Reticle = nil
 
-		self.timer:after(0.35, function() self:switchState('Walk') end)
+		self.timer:after(spr.bair.attackBasic:getAnimDur(7, #spr.bair.attackFarclaw.durations) + 0.1,
+			function() self:switchState('Walk') end)
 	end
 }
 

@@ -1,10 +1,10 @@
 --load libs
-util = require 'libs/util'
+lume = require 'libs/lume'
+util, random = unpack(require 'libs/util')
 class = require 'libs/class'
 input = require 'libs/boipushy'
 tiny = require 'libs/tiny'
 bump = require 'libs/bump'
-lume = require 'libs/lume'
 anim = require 'libs/anim8'
 tile = require 'libs/tile'
 Timer = require 'libs/timer'
@@ -53,6 +53,8 @@ function love.load()
 	Input:bind('escape', 'exit')
 	Input:bind('left', 'left')
 	Input:bind('right', 'right')
+	Input:bind('up', 'up')
+	Input:bind('down', 'down')
 	Input:bind('`', 'debug')
 
 	Gamestate.switch(gs.Game)

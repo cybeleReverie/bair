@@ -12,16 +12,14 @@ end
 
 function bumpSys:process(e, dt)
 	--handle collisions
-	if e.cols then
-		for i in ipairs(e.cols) do
-			if e.collide then e:collide(e.cols[i].other) end
-			e.cols[i] = nil
-		end
+	if e.collide and e.cols then
+		lume.each(e.cols, function(x) e:collide(x.other) end)
+		e.cols = nil
 	end
 
 	--remove if offscreen
 	if e.x <= -48 or e.y <= -48 or e.x >= SCREEN_W + 350 or e.y >= SCREEN_H + 48 then
-		if e.name ~= 'Player' then
+		if not e.persistOffscreen then
 			ewo:remove(e)
 		end
 	end

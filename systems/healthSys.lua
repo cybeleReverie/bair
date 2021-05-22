@@ -9,6 +9,7 @@ function healthSys:process(e, dt)
 		e.invincible = true
 		Timer.after(1.1, function() e.invincible = false end)
 	end
+	e.damage = nil
 
 	if e.hp <= 0 then
 		if e.name ~= 'Player' then
@@ -19,8 +20,6 @@ function healthSys:process(e, dt)
 			Gamestate.switch(gs.GameOver)
 		end
 	end
-
-	e.damage = nil
 end
 
 return healthSys

@@ -1,4 +1,4 @@
-local util = {}
+local util, random = {}, {}
 
 function util.newMatrix(w, h, def)
   local t = {}
@@ -28,4 +28,12 @@ function util.deepCopy(orig)
     return copy
 end
 
-return util
+function random.chance(prob)
+	return math.random(prob) == 1
+end
+
+random.num = math.random
+random.weightedChoice = lume.weightedchoice
+random.choice = lume.randomchoice
+
+return {util, random}

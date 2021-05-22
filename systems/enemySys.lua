@@ -23,7 +23,7 @@ function enemySys:onAdd(e)
 	end
 
 	e.states.Attack.callback = function(this)
-		local s = this.states['Attack'][lume.weightedchoice(this.attackWeights)]
+		local s = this.states['Attack'][random.weightedChoice(this.attackWeights)]
 
 		this.states._switchCallback(this)
 
@@ -87,8 +87,8 @@ function enemySys:process(e, dt)
 end
 
 function enemySys:onRemove(e)
-	Timer.after(math.random(4, 6), function()
-		Signal.emit('spawnEncounter', lume.weightedchoice({obstacle = 75, enemy = 25}))
+	Timer.after(random.num(4, 6), function()
+		Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 75, enemy = 25}))
 	end)
 end
 

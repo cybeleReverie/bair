@@ -25,7 +25,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self:stopMoving()
 
-				self.timer:after(math.random(2, 4),
+				self.timer:after(random.num(2, 4),
 					function()
 						self:switchState('Attack')
 					end)
@@ -41,7 +41,7 @@ function Turtledove:init(x, y)
 			{callback = function(self)
 				self.timer:after(0.2, function()
 					self:setGoalPos(24, self.home.y)
-					self:setSpeed(math.random(280, 400))
+					self:setSpeed(random.num(280, 400))
 
 					self.spr = spr.turtledove.rush
 				end)
@@ -65,13 +65,13 @@ function Turtledove:init(x, y)
 
 					--switch from ground to air
 					self.timer:tween(0.25, self.goal, {y = 48}, 'cubic')
-					self:setSpeed(math.random(280, 400))
+					self:setSpeed(random.num(280, 400))
 
 					self.spr = spr.turtledove.rush
 				end)
 
 				--maybe shoot bile ball
-				if math.random(4) == 1 then
+				if random.chance(3) then
 					self:spitBileBall()
 				end
 
@@ -113,7 +113,7 @@ function Turtledove:spitBileBall()
 		y = self.y + 4,
 		w = 8, h = 5,
 		dmg = 1,
-		velx = -350,
+		velx = -350 + random.num(20),
 		spr = img.bileBall
 	}
 end

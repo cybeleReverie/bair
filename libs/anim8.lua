@@ -208,6 +208,20 @@ function Animation:flipV()
   return self
 end
 
+local function count(inc, num)
+	return num + inc
+end
+
+function Animation:getAnimDur(s1, s2)
+	local l = 0
+	local frames = self.durations
+	if s1 and s2 then
+		frames = lume.slice(frames, s1, s2)
+	end
+	for i in ipairs(frames) do l = l + frames[i] end
+	return l
+end
+
 local function seekFrameIndex(intervals, timer)
   local high, low, i = #intervals-1, 1, 1
 

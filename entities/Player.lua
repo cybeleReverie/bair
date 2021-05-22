@@ -14,6 +14,7 @@ function Player:init(x, y)
 
 	self.vel = vec.new()
 	self.gravity = true
+	self.persistOffscreen = true
 
 	--stats
 	self.maxHp = 10		self.hp = self.maxHp
@@ -66,7 +67,7 @@ function Player:init(x, y)
 					self:switchState('InAir')
 				end
 
-				if Input:pressed('attack') and self.canAttack == true then
+				if Input:pressed('attack') and self.canAttack == true and not (self.y < 104) then
 					self:switchState('Attack')
 				end
 			end
@@ -182,8 +183,10 @@ function Player:update(dt)
 	if self.state ~= self.states.Attack then
 		local atk = 5
 
-		if Input:down('right') then atk = 6 end
-		if Input:down('left') then atk = 4 end
+		if Input:down('right') then atk = atk + 1 end
+		if Input:down('left') then atk = atk - 1 end
+		if Input:down('up') then atk = atk - 3 end
+		if Input:down('down') then atk = atk + 3 end
 
 		self.curAttack = self.attacks[atk]
 	end
@@ -202,30 +205,23 @@ end
 --utilities
 function Player:checkOnGround()
 	local q = bwo:queryRect(self.x, self.y + self.h, self.w, 1)
-	for i in ipairs(q) do
-		if q[i].name == 'Block' then
-			return true
-		end
-	end
-	return false
+	local grounded = false
+	lume.each(q, function(i) if i.name == 'Block' then grounded = true end end)
+	return grounded
 end
 
 function Player:checkHBlockCollision(x, y)
 	local q = bwo:queryRect(x or self.x, y or self.y, self.w, self.h)
-	for i in ipairs(q) do
-		if q[i].name == 'Block' then
-			return true
-		end
-	end
+	local collision = false
+	lume.each(q, function(i) if i.name == 'Block' then collision = true end end)
+	return collision
 end
 
 function Player:checkHeadBump()
 	local q = bwo:queryRect(self.x, self.y - 1, self.w, 1)
-	for i in ipairs(q) do
-		if q[i].name == 'Block' then
-			return true
-		end
-	end
+	local bumped = false
+	lume.each(q, function(i) if i.name == 'Block' then bumped = true end end)
+	return bumped
 end
 
 function Player:closeEnough()
