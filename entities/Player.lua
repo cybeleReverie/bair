@@ -141,13 +141,13 @@ function Player:init(x, y)
 				end
 			end,
 			exit = function(self)
-				self.timer:after(self.curAttack.rechargeTime, function() self.canAttack = true end)
+				self.timer:after(self.curAttack.rechargeTime, function()
+					self.canAttack = true
+				end)
+
+				self.blinking = self.curAttack.rechargeTime
 			end
 		},
-		-- _switchCallback = function(self, state) --called by FSM upon switching state
-		-- 	clear all timers & tweens
-		-- 	self.timer:clear()
-		-- end
 	}
 
 	self:switchState('Walk')
@@ -163,6 +163,7 @@ function Player:init(x, y)
 	self.draw = true
 	self.ox = 9
 	self.oy = 12
+	self.opacity = 1
 
 	self.spritesheet = img.bair
 	self.spr = spr.bair.walk
@@ -225,12 +226,12 @@ function Player:checkHeadBump()
 end
 
 function Player:closeEnough()
-	for i = 1, 6 do
+	for i = 1, 10 do
 		if not self:checkHBlockCollision(self.x, self.y - i) then
 			return true
 		end
 	end
-	for i = 1, 6 do
+	for i = 1, 10 do
 		if not self:checkHBlockCollision(self.x, self.y + i) then
 			return true
 		end

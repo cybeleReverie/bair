@@ -7,9 +7,11 @@ function healthSys:process(e, dt)
 		e.hp = e.hp - e.damage
 
 		e.invincible = true
-		Timer.after(1.1, function() e.invincible = false end)
+		Timer.after(1.1, function() e.invincible = false; e.opacity = 1 end)
 	end
 	e.damage = nil
+
+	if e.invincible then e.opacity = 0.6 end
 
 	if e.hp <= 0 then
 		if e.name ~= 'Player' then

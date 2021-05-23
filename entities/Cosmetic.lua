@@ -3,10 +3,12 @@ local Cosmetic = class 'Cosmetic'
 function Cosmetic:init(x, y, velx, vely, spr)
 	self.x = x
 	self.y = y
-	self.w = 1
-	self.h = 1
 
-	self.vel = vec.new(velx or 0, vely or 0)
+	if velx or vely then
+		self.w = 1
+		self.h = 1
+		self.vel = vec.new(velx or 0, vely or 0)
+	end
 
 	self.ghost = true
 

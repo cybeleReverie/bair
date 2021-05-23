@@ -2,7 +2,7 @@ local attack = {}
 
 --Basic
 attack.basic = {
-	rechargeTime = 0.5,
+	rechargeTime = 0.7,
 	sprite = spr.bair.attackBasic,
 
 	enter = function(self)
@@ -27,7 +27,7 @@ attack.farclaw = {
 	sprite = spr.bair.attackFarclaw,
 
 	enter = function(self)
-		self.timer:after(0.4, function()
+		self.timer:after(0.5, function()
 			Reticle = {
 				x = self.x + self.w,
 				y = self.y + self.h / 2 - 10,
@@ -45,7 +45,6 @@ attack.farclaw = {
 				draw = true,
 				depth = 10,
 			}
-			Reticle.this = Reticle
 
 			ewo:add(Reticle)
 		end)
@@ -72,7 +71,7 @@ attack.farclaw = {
 		Reticle = nil
 
 		self.timer:after(spr.bair.attackBasic:getAnimDur(7, #spr.bair.attackFarclaw.durations) + 0.1,
-			function() self:switchState('Walk') end)
+			function() self:switchState('Walk'); end)
 	end
 }
 

@@ -1,33 +1,11 @@
 local Mapgen = class 'Mapgen'
 
 function Mapgen:init()
-	self.encTimer = {14, 18} --encounter timer bounds (in seconds)
+	self.isMapgen = true --flag for mapgen system
 
-	--build floor
-	self:buildFloor(0, 0)
-	Signal.register('buildNewFloor', function()
-		self:buildFloor(24 * 14, 0)
-	end)
-
-	--spawn encounter signal
-	Signal.register('spawnEncounter', function(encType)
-		if encType == 'obstacle' then
-			--build random obstacle
-			self:buildChunk(320, 12, self.chunks[random.num(#self.chunks)])
-
-			--set timer for next obstacle
-			Timer.after(random.num(self.encTimer[1], self.encTimer[2]), function()
-				Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 50, enemy = 50}))
-			end)
-		elseif encType == 'enemy' then
-			self:spawnEnemy()
-		end
-	end)
-
-	--spawn first encounter
-	Timer.after(1, function()
-		Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 50, enemy = 50}))
-	end)
+	self.enemyList = {
+		Turtledove
+	}
 
 	ewo:add(self)
 end
@@ -83,7 +61,7 @@ function Mapgen:generateFloorTiles()
 				else --below ground
 					if nbL then ajt = 3 end
 					if nbR then ajt = 4 end
-					if nbU then ajt = 5 end
+					if nbU and random.chance(2) then ajt = 5 end
 				end
 
 				--if stone neighbors on both sides, adjust to solid stone or dirt
@@ -140,20 +118,6 @@ function Mapgen:buildFloor(x, y)
 			end
 		end
 	end
-end
-
-function Mapgen:buildChunk(x, y, chunk)
-	for i in ipairs(chunk) do
-		for j in ipairs(chunk[i]) do
-			if chunk[i][j] == 1 then
-				Block:new(x + j * 24 - 24, y + i * 24 - 24, -gs.Game.hspeed)
-			end
-		end
-	end
-end
-
-function Mapgen:spawnEnemy()
-	Turtledove:new(320, 81)
 end
 
 --chunks

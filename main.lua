@@ -29,6 +29,7 @@ require 'entities/entities'
 ewo = tiny.world(
 	require 'systems/drawSys',
 	require 'systems/depthDrawSys',
+	require 'systems/mapgenSys',
 	require 'systems/bumpSys',
 	require 'systems/moveSys',
 	require 'systems/updateLoopSys',
@@ -72,6 +73,6 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.print(bwo:countItems())
+	if debugMode then love.graphics.print(bwo:countItems()) end
 	love.graphics.scale(3, 3)
 end
