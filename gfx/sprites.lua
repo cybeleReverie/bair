@@ -2,6 +2,7 @@ love.graphics.setDefaultFilter('nearest', 'nearest')
 
 --static image
 local img = {
+	hud = love.graphics.newImage('gfx/hud.png'),
 	bair = love.graphics.newImage('gfx/bair.png'),
 	turtledove = love.graphics.newImage('gfx/turtledove.png'),
 	bileBall = love.graphics.newImage('gfx/bileBall.png'),
@@ -56,6 +57,10 @@ local tile = {
 		rootL = {6, 1, 48, 48},
 		rootD = {8, 1, 24, 48},
 		rootR = {9, 1, 48, 48}
+	}),
+	hud = tile.newSet(img.hud, 8, 8, {
+		heart = {1, 1},
+		heartEmpty = {2, 1},
 	})
 }
 

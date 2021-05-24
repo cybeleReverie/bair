@@ -4,6 +4,5 @@ function love.conf(t)
 
 	t.window.width = SCREEN_W * 3
 	t.window.height = SCREEN_H * 3
-
 	t.window.title = 'B-Air Legends Alpha v0.01'
 end

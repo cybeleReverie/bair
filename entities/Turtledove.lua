@@ -25,7 +25,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self:stopMoving()
 
-				self.timer:after(random.num(2, 4),
+				self.timer:after(random.num(1.75, 3.5),
 					function()
 						self:switchState('Attack')
 					end)

@@ -37,7 +37,7 @@ function Player:init(x, y)
 		[5] = attack.basic,
 		[6] = attack.farclaw
 	}
-	self.curAttack = 5
+	self.curAttack = self.attacks(5)
 
 	self.spells = {}
 	self.curSpell = 1

@@ -45,6 +45,7 @@ ecsDrawSys = tiny.requireAll('isDrawSys')
 --game logic
 function love.load()
 	math.randomseed(os.time())
+	love.graphics.setLineStyle("rough")
 	Gamestate.registerEvents()
 
 	--bind inputs
