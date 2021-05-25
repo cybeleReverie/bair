@@ -9,7 +9,7 @@ function enemySys:onAdd(e)
 	e.collide = function(this, other)
 		if other.name == 'DamageBox' then
 			this.damage = other.dmg
-			if other.dealer.state == other.dealer.states['Attack'] then this:switchState('Retreat') end
+			if other.dealer.state == other.dealer.states.Attack then this:switchState('Retreat') end
 		end
 	end
 
