@@ -12,7 +12,8 @@ attack.basic = {
 				w = 16, h = 24,
 				dmg = self.pow,
 				decay = 0.2,
-				velx = 140
+				velx = 140,
+				dealer = self
 			}
 		end)
 
@@ -43,7 +44,7 @@ attack.farclaw = {
 				end,
 				spr = img.reticle,
 				draw = true,
-				depth = 10,
+				depth = 10
 			}
 
 			ewo:add(Reticle)
@@ -59,10 +60,11 @@ attack.farclaw = {
 				w = 24, h = 26,
 				dmg = self.pow,
 				decay = 0.16,
+				dealer = self,
 				persistOnCollide = true,
-				spr = spr.bair.clawEffect, spritesheet = img.clawEffect
+				spr = spr.bair.clawEffect, spritesheet = img.clawEffect,
+				ox = 36, oy = 2
 			}
-			d.ox, d.oy = 36, 2
 
 			ewo:remove(Reticle)
 

@@ -12,6 +12,7 @@ Camera = require 'libs/camera'
 Signal = require 'libs/signal'
 vec = require 'libs/vec'
 Gamestate = require 'libs/gamestate'
+lg = love.graphics
 
 --graphics
 img, spr, tile, font = unpack(require 'gfx/sprites')
@@ -45,13 +46,14 @@ ecsDrawSys = tiny.requireAll('isDrawSys')
 --game logic
 function love.load()
 	math.randomseed(os.time())
-	love.graphics.setLineStyle("rough")
+	lg.setLineStyle("rough")
 	Gamestate.registerEvents()
 
 	--bind inputs
 	Input = input()
 	Input:bind('z', 'jump')
 	Input:bind('x', 'attack')
+	Input:bind('c', 'cast')
 	Input:bind('escape', 'exit')
 	Input:bind('left', 'left')
 	Input:bind('right', 'right')
@@ -74,6 +76,6 @@ function love.update(dt)
 end
 
 function love.draw()
-	if debugMode then love.graphics.print(bwo:countItems()) end
-	love.graphics.scale(3, 3)
+	if debugMode then lg.print(bwo:countItems()) end
+	lg.scale(3, 3)
 end

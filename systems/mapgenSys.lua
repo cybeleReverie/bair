@@ -48,7 +48,7 @@ function mapgenSys:onAdd(e)
 	end)
 
 	--build floor
-	e:buildFloor(0, 0)
+	e:buildFloor(1, 0)
 end
 
 function mapgenSys:process(e, dt)

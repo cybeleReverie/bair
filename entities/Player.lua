@@ -17,20 +17,21 @@ function Player:init(x, y)
 	self.persistOffscreen = true
 
 	--stats
-	self.maxHp = 10		self.hp = self.maxHp
-	self.maxMp = 5		self.mp = self.maxMp
+	self.maxHp = 5;			self.hp = self.maxHp
+	self.maxMp = 5;			self.mp = self.maxMp
 
-	self.maxStr = 3		self.str = self.maxStr
-	self.maxDex = 3		self.dex = self.maxDex
-	self.maxInt = 3		self.int = self.maxInt
+	self.maxStr = 3;		self.str = self.maxStr
+	self.maxDex = 3;		self.dex = self.maxDex
+	self.maxInt = 3;		self.int = self.maxInt
 
-	self.maxPow = 3		self.pow = self.maxPow
-	self.maxHov = 0.5 	self.hov = self.maxHov
-	self.maxMag = 3		self.mag = self.maxMag
+	self.maxPow = 3;		self.pow = self.maxPow
+	self.maxHov = 1;		self.hov = self.maxHov
+	self.maxMag = 3;		self.mag = self.maxMag
+
+	self.maxHovTime = 0.5;	self.hovTime = self.maxHovTime
 
 	self.jumpHeight = 290
 	self.canAttack = true
-	self.isAttacking = false
 
 	--moveset
 	self.attacks = {
@@ -39,18 +40,25 @@ function Player:init(x, y)
 	}
 	self.curAttack = self.attacks[5]
 
-	self.spells = {}
-	self.curSpell = 1
+	self.spells = {
+		[3] = spell.fireball
+	}
+	self.curSpell = self.spells[3]
 
 	--private timer instance
 	self.timer = Timer.new()
+
+	--regenerate MP
+	self.mpRegenTimer = self.timer:every(8, function()
+		if self.mp < self.maxMp then self.mp = self.mp + 1 end
+	end)
 
 	--fsm states
 	self.states = {
 		Walk = {
 			callback = function(self)
 				self.vel.y = 0
-				self.hov = self.maxHov
+				self.hovTime = self.maxHovTime
 				self.gravity = true
 
 				self:changeSprite(spr.bair.walk)
@@ -67,7 +75,10 @@ function Player:init(x, y)
 					self:switchState('InAir')
 				end
 
-				if Input:pressed('attack') and self.canAttack == true and not (self.y < 104) then
+				if Input:pressed('attack')
+					and self.canAttack == true
+					and self.curAttack
+					and not (self.y < 104) then
 					self:switchState('Attack')
 				end
 			end
@@ -86,7 +97,7 @@ function Player:init(x, y)
 				end
 
 				if Input:pressed('jump') or (Input:down('jump') and self.vel.y == 0) then
-					if self.hov > 0 and not self:checkHeadBump() then self:switchState('Hover') end
+					if self.hovTime > 0 and not self:checkHeadBump() then self:switchState('Hover') end
 				end
 
 				if Input:released('jump') then
@@ -109,7 +120,7 @@ function Player:init(x, y)
 				self:changeSprite(spr.bair.hover)
 			end,
 			update = function(self, dt)
-				if self.hov <= 0 or Input:released('jump') then
+				if self.hovTime <= 0 or Input:released('jump') then
 					self:switchState('InAir')
 				end
 
@@ -117,7 +128,7 @@ function Player:init(x, y)
 					self:switchState('Walk')
 				end
 
-				self.hov = math.max(0, self.hov - dt)
+				self.hovTime = math.max(0, self.hovTime - dt)
 			end
 		},
 		Attack = {
@@ -147,7 +158,7 @@ function Player:init(x, y)
 
 				self.blinking = self.curAttack.rechargeTime
 			end
-		},
+		}
 	}
 
 	self:switchState('Walk')
@@ -180,16 +191,41 @@ function Player:update(dt)
 		if self:closeEnough() == false then self.damage = 1 end
 	end
 
+	--spellcasting
+	if self.curSpell then
+		if Input:pressed('cast') and self.mp - self.curSpell.cost >= 0 and self.canAttack == true then
+			self.curSpell.enter(self)
+			self.mp = self.mp - self.curSpell.cost
+			self.canAttack = false
+		end
+
+		if Input:down('cast') then
+			if self.curSpell.update then self.curSpell.update(self) end
+		end
+
+		if Input:released('cast') then
+			if self.curSpell.exit then self.curSpell.exit(self) end
+
+			self.timer:after(self.curSpell.rechargeTime, function()
+				self.canAttack = true
+			end)
+
+			if self.mp > 0 then self.timer:reset(self.mpRegenTimer) end
+
+			self.blinking = self.curSpell.rechargeTime
+		end
+	end
+
 	--select attack
-	if self.state ~= self.states.Attack then
-		local atk = 5
+	if self.state ~= self.states.Attack and self.canAttack == true then
+		local atk, spl = 5, 3
 
-		if Input:down('right') then atk = atk + 1 end
+		if Input:down('right') then atk = atk + 1; spl = spl + 1 end
 		if Input:down('left') then atk = atk - 1 end
-		if Input:down('up') then atk = atk - 3 end
-		if Input:down('down') then atk = atk + 3 end
+		if Input:down('up') then atk = atk - 3; spl = spl - 2 end
+		if Input:down('down') then atk = atk + 3; spl = spl + 2 end
 
-		self.curAttack = self.attacks[atk]
+		self.curAttack, self.curSpell = self.attacks[atk], self.spells[spl]
 	end
 end
 

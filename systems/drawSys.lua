@@ -3,7 +3,7 @@ drawSys.filter = tiny.filter('draw&!depth')
 drawSys.isDrawSys = true
 
 function drawSys:process(e, dt)
-	love.graphics.setColor(1, 1, 1, e.opacity or 1)
+	lg.setColor(1, 1, 1, e.opacity or 1)
 
 	if type(e.draw) == 'function' then e:draw()
 	else
@@ -14,14 +14,14 @@ function drawSys:process(e, dt)
 				end
 				e.spr:update(love.timer.getDelta())
 			elseif e.spr.sheet then -- tile
-				love.graphics.draw(e.spr.sheet, e.spr.tile, e.x, e.y, 0, 1, 1, e.ox or 0, e.oy or 0)
+				lg.draw(e.spr.sheet, e.spr.tile, e.x, e.y, 0, 1, 1, e.ox or 0, e.oy or 0)
 			else --static sprite
-				love.graphics.draw(e.spr, e.x, e.y, 0, 1, 1, e.ox or 0, e.oy or 0)
+				lg.draw(e.spr, e.x, e.y, 0, 1, 1, e.ox or 0, e.oy or 0)
 			end
 		else
 			--placeholder rectangle
-			love.graphics.setColor(0, 0.85, 0)
-			love.graphics.rectangle('fill', e.x, e.y, e.w, e.h)
+			lg.setColor(0, 0.85, 0)
+			lg.rectangle('fill', e.x, e.y, e.w, e.h)
 		end
 	end
 
@@ -41,8 +41,8 @@ function drawSys:process(e, dt)
 	--draw red hitboxes
 	if debugMode == true then
 		if e.w and e.h then
-			love.graphics.setColor(1, 0, 0)
-			love.graphics.rectangle('line', e.x, e.y, e.w, e.h)
+			lg.setColor(1, 0, 0)
+			lg.rectangle('line', e.x, e.y, e.w, e.h)
 		end
 	end
 end

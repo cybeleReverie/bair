@@ -13,6 +13,7 @@ function Cosmetic:init(x, y, velx, vely, spr)
 	self.ghost = true
 
 	self.spr = spr
+--	self.spritesheet = params.spritesheet
 	self.draw = true
 	self.depth = 10
 

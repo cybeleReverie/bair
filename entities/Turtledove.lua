@@ -25,7 +25,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self:stopMoving()
 
-				self.timer:after(random.num(1.75, 3.5),
+				self.timer:after(random.num(2, 3.5),
 					function()
 						self:switchState('Attack')
 					end)
@@ -114,6 +114,7 @@ function Turtledove:spitBileBall()
 		w = 8, h = 5,
 		dmg = 1,
 		velx = -350 + random.num(20),
+		dealer = self,
 		spr = img.bileBall
 	}
 end

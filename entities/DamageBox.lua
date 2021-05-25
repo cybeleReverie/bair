@@ -7,6 +7,7 @@ function DamageBox:init(params)
 	self.h = params.h
 	self.dmg = params.dmg
 	self.vel = vec.new(params.velx or 0, params.vely or 0)
+	self.dealer = params.dealer
 
 	self.ghost = true
 
@@ -23,6 +24,8 @@ function DamageBox:init(params)
 		end
 		self.draw = true
 	end
+
+	self.ox, self.oy = params.ox, params.oy
 
 	if not params.persistOnCollide then
 		self.collide = function(self, other)

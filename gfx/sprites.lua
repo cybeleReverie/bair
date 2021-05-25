@@ -1,25 +1,27 @@
-love.graphics.setDefaultFilter('nearest', 'nearest')
+lg.setDefaultFilter('nearest', 'nearest')
 
 --static image
 local img = {
-	hud = love.graphics.newImage('gfx/hud.png'),
-	bair = love.graphics.newImage('gfx/bair.png'),
-	turtledove = love.graphics.newImage('gfx/turtledove.png'),
-	bileBall = love.graphics.newImage('gfx/bileBall.png'),
-	groundTiles = love.graphics.newImage('gfx/groundTiles.png'),
-	reticle = love.graphics.newImage('gfx/reticle.png'),
-	clawEffect = love.graphics.newImage('gfx/clawEffect.png')
+	hud = lg.newImage('gfx/hud.png'),
+	bair = lg.newImage('gfx/bair.png'),
+	turtledove = lg.newImage('gfx/turtledove.png'),
+	bileBall = lg.newImage('gfx/bileBall.png'),
+	groundTiles = lg.newImage('gfx/groundTiles.png'),
+	reticle = lg.newImage('gfx/reticle.png'),
+	clawEffect = lg.newImage('gfx/clawEffect.png'),
+	spell16 = lg.newImage('gfx/spell16.png'),
 }
 
 --animation frames
 local grid = {
 	bair = anim.newGrid(160, 40, img.bair:getDimensions()),
 	turtledove = anim.newGrid(53, 30, img.turtledove:getDimensions()),
-	clawEffect = anim.newGrid(65, 39, img.clawEffect:getDimensions())
+	clawEffect = anim.newGrid(65, 39, img.clawEffect:getDimensions()),
+	spell16 = anim.newGrid(16, 16, img.spell16:getDimensions()),
 }
 
 --animations
-local sprite = {
+local spr = {
 	bair = {
 		walk = anim.newAnimation(grid.bair('2-5', 1), 0.18),
 		jump = anim.newAnimation(grid.bair(27, 1), 1),
@@ -40,6 +42,10 @@ local sprite = {
 		idle = anim.newAnimation(grid.turtledove('1-2', 1), 0.25),
 		preRush = anim.newAnimation(grid.turtledove(3, 1), 1),
 		rush = anim.newAnimation(grid.turtledove('4-5', 1), 0.15),
+	},
+
+	spell = {
+		fireball = anim.newAnimation(grid.spell16('1-2', 1), 0.15)
 	}
 }
 
@@ -66,8 +72,8 @@ local tile = {
 
 --fonts
 local font = {
-	romulus = love.graphics.newFont('gfx/Romulus.ttf', 16),
-	alagard = love.graphics.newFont('gfx/alagard.ttf', 16)
+	romulus = lg.newFont('gfx/Romulus.ttf', 16),
+	alagard = lg.newFont('gfx/alagard.ttf', 16)
 }
 
-return {img, sprite, tile, font}
+return {img, spr, tile, font}

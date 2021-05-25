@@ -8,8 +8,8 @@ function enemySys:onAdd(e)
 	--collision callback
 	e.collide = function(this, other)
 		if other.name == 'DamageBox' then
-			--take damage
 			this.damage = other.dmg
+			if other.dealer.state == other.dealer.states['Attack'] then this:switchState('Retreat') end
 		end
 	end
 
@@ -78,9 +78,6 @@ end
 function enemySys:process(e, dt)
 	--update state
 	e:updateState()
-
-	--retreat if hurt
-	if e.invincible then e:switchState('Retreat') end
 
 	--update private timer
 	e.timer:update(dt)

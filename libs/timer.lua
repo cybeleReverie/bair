@@ -94,6 +94,10 @@ function Timer:clear()
 	 self.functions = {}
 end
 
+function Timer:reset(handle)
+	handle.time = 0
+end
+
 function Timer:script(f)
 	local co = coroutine.wrap(f)
 	co(function(t)
