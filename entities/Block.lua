@@ -1,8 +1,7 @@
 local Block = class 'Block'
 
 function Block:init(x, y, velx, vely)
-	self.x = x
-	self.y = y
+	self.pos = vec.new(x, y)
 	self.w = 24
 	self.h = 24
 

@@ -1,20 +1,38 @@
 local Hud = class 'Hud'
 
-local player, mpDisplay, dt
+local player, mpBarW, expBarW, dt
+local expMaxW = 48
 
 function Hud:init()
-	self.x, self.y = 0, 0
 	player = gs.Game.player
-	mpDisplay = gs.Game.player.mp
+	mpBarW = gs.Game.player.mp
 	self.depth = 1000
+end
 
-	ewo:add(self)
+local function drawShinyBar(x, y, w, h)
+
 end
 
 function Hud:draw()
 	dt = love.timer.getDelta()
 
+	--draw exp bar
+	lg.setColor(1, 1, 1)
+	love.graphics.print('Lv. ' .. player.expLevel, 2, -1)
+--	love.graphics.print(player.exp .. '/' .. player.expLevel * 8, 3, 16)
+
+	local maxExp = player.expLevel * 8
+	expBarW = math.floor((maxExp - (maxExp - player.exp)) / maxExp * 48)
+
+	lg.setColor(lume.color('#261624')); lg.rectangle('fill', 34, 3, 48, 7)
+	lg.setColor(lume.color('#00c6b0')); lg.rectangle('fill', 34, 3, expBarW, 7)
+	lg.setColor(1, 1, 1, 0.25);			lg.line(34, 4, 34 + expBarW, 4)
+	lg.setColor(1, 1, 1, 0.5);			lg.line(34, 5, 34 + expBarW, 5)
+	lg.setColor(0, 0, 0, 0.25);			lg.line(34, 9, 34 + expBarW, 9)
+	lg.setColor(0, 0, 0);				lg.rectangle('line', 34, 3, 48, 7)
+
 	--draw hp
+	lg.setColor(1, 1, 1)
 	for i = 1, player.maxHp do
 		lg.draw(img.hud, tile.hud.heartEmpty.tile, 84 + i * 9, 140)
 	end
@@ -22,15 +40,15 @@ function Hud:draw()
 		lg.draw(img.hud, tile.hud.heart.tile, 84 + i * 9, 140)
 	end
 
-	--draw mp
-	if player.mp < mpDisplay then mpDisplay = math.max(mpDisplay - 4 * dt, player.mp)
-	elseif player.mp > mpDisplay then mpDisplay = math.min(mpDisplay + 2 * dt, player.mp) end
+	--draw mp bar
+	if player.mp < mpBarW then mpBarW = math.max(mpBarW - 4 * dt, player.mp)
+	elseif player.mp > mpBarW then mpBarW = math.min(mpBarW + 2 * dt, player.mp) end
 
 	lg.setColor(lume.color('#261624')); lg.rectangle('fill', 94, 152, player.maxMp * 8, 7)
-	lg.setColor(lume.color('#7e0a70')); lg.rectangle('fill', 94, 152, mpDisplay * 8, 7)
-	lg.setColor(1, 1, 1, 0.05);			lg.line(94, 153, 94 + mpDisplay * 8, 153)
-	lg.setColor(1, 1, 1, 0.2);			lg.line(94, 154, 94 + mpDisplay * 8, 154)
-	lg.setColor(0, 0, 0, 0.35);			lg.line(94, 157, 94 + mpDisplay * 8, 157)
+	lg.setColor(lume.color('#7e0a70')); lg.rectangle('fill', 94, 152, mpBarW * 8, 7)
+	lg.setColor(1, 1, 1, 0.05);			lg.line(94, 153, 94 + mpBarW * 8, 153)
+	lg.setColor(1, 1, 1, 0.2);			lg.line(94, 154, 94 + mpBarW * 8, 154)
+	lg.setColor(0, 0, 0, 0.35);			lg.line(94, 157, 94 + mpBarW * 8, 157)
 	lg.setColor(0, 0, 0); 				lg.rectangle('line', 94, 152, player.maxMp * 8, 7)
 
 	--draw melee moveset
@@ -43,11 +61,9 @@ function Hud:draw()
 		lg.setColor(1, 1, 1, 0.25)
 		lg.rectangle('fill', xx, yy, 12, 12)
 
---		if player.attacks[i + 1] then
-			lg.setColor(0, 0, 0)
-			lg.rectangle('line', xx, yy, 12, 12)
-			lg.print(i + 1, xx, yy)
---		end
+		lg.setColor(0, 0, 0)
+		lg.rectangle('line', xx, yy, 12, 12)
+
 		if atk == i + 1 then
 			lg.setColor(1, 1, 1)
 			lg.rectangle('line', xx, yy, 12, 12)
@@ -67,7 +83,6 @@ function Hud:draw()
 		--if player.spells[i + 1] then
 			lg.setColor(0, 0, 0)
 			lg.rectangle('line', xx, yy, 12, 12)
-			lg.print(i + 1, xx, yy)
 		--end
 		if spell == i + 1 then
 			lg.setColor(1, 1, 1)

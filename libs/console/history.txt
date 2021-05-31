@@ -1,0 +1,19 @@
+fuck
+gs.Game.player.x
+gs.Game.player.pos.x
+heyy
+print(hi)
+print('hi')
+exit
+'exit'
+player:switchState('Attack')
+gs.Game.player:switchState('Attack')
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+Game.mapgen.spawnEnemy(Game.mapgen)
+Game.mapgen.spawnEnemy)()
+Game.mapgen:spawnEnemy()
+gs.Game.mapgen:spawnEnemy()
+drawHitboxes = true

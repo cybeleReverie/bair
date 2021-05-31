@@ -1,17 +1,16 @@
 local enemyAI = class 'enemyAI' --mixin class for enemy AI functionality
 
 --AI primitives
-function enemyAI:moveTowardsPoint(x, y)
+function enemyAI:moveTowardsGoal()
 	--calculate velocity towards point
-	self.vel.x = x - self.x
-	self.vel.y = y - self.y
+	self.vel = self.goal - self.pos
 	self.vel:normalizeInplace()
 	self.vel = self.vel * self.speed
 
 	--snap to goal if close enough
-	if self:distToPoint(x, y) <= 5 then
-		self.warpX = x
-		self.warpY = y
+	if self.pos:dist(self.goal) <= 5 then
+		self.warpX = self.goal.x
+		self.warpY = self.goal.y
 	end
 end
 
@@ -24,16 +23,11 @@ function enemyAI:setSpeed(spd)
 end
 
 function enemyAI:atGoalPos()
-	return self.x == self.goal.x and self.y == self.goal.y
+	return self.pos == self.goal
 end
 
 function enemyAI:stopMoving()
 	self.vel.x, self.vel.y = 0, 0
-end
-
---AI utility functions
-function enemyAI:distToPoint(x, y)
-	return lume.distance(self.x, self.y, x, y)
 end
 
 return enemyAI

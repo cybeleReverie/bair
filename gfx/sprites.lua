@@ -10,6 +10,8 @@ local img = {
 	reticle = lg.newImage('gfx/reticle.png'),
 	clawEffect = lg.newImage('gfx/clawEffect.png'),
 	spell16 = lg.newImage('gfx/spell16.png'),
+	items = lg.newImage('gfx/items.png'),
+	treasureChest = lg.newImage('gfx/treasureChest.png')
 }
 
 --animation frames
@@ -46,7 +48,7 @@ local spr = {
 
 	spell = {
 		fireball = anim.newAnimation(grid.spell16('1-2', 1), 0.15)
-	}
+	},
 }
 
 --tilesets
@@ -67,13 +69,18 @@ local tile = {
 	hud = tile.newSet(img.hud, 8, 8, {
 		heart = {1, 1},
 		heartEmpty = {2, 1},
+	}),
+	item = tile.newSet(img.items, 16, 16, {
+		apple = {1, 1},
 	})
 }
 
 --fonts
 local font = {
-	romulus = lg.newFont('gfx/Romulus.ttf', 16),
-	alagard = lg.newFont('gfx/alagard.ttf', 16)
+	victoria = lg.newImageFont('gfx/fonts/VictoriaBold.png',
+		'!"#$% &()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[~]^_`abcdefghijklmnopqrstuvwxyz{|}'),
+	romulus = lg.newFont('gfx/fonts/Romulus.ttf', 16),
+	alagard = lg.newFont('gfx/fonts/alagard.ttf', 16)
 }
 
 return {img, spr, tile, font}

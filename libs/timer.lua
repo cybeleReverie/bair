@@ -52,18 +52,20 @@ local function updateTimerHandle(handle, dt)
 end
 
 function Timer:update(dt)
-	-- timers may create new timers, which leads to undefined behavior
-	-- in pairs() - so we need to put them in a different table first
-	local to_update = {}
-	for handle in pairs(self.functions) do
-		to_update[handle] = handle
-	end
+	if not pause then
+		-- timers may create new timers, which leads to undefined behavior
+		-- in pairs() - so we need to put them in a different table first
+		local to_update = {}
+		for handle in pairs(self.functions) do
+			to_update[handle] = handle
+		end
 
-	for handle in pairs(to_update) do
-		if self.functions[handle] then
-			updateTimerHandle(handle, dt)
-			if handle.count == 0 then
-				self.functions[handle] = nil
+		for handle in pairs(to_update) do
+			if self.functions[handle] then
+				updateTimerHandle(handle, dt)
+				if handle.count == 0 then
+					self.functions[handle] = nil
+				end
 			end
 		end
 	end

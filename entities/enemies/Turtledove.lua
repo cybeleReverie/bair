@@ -2,15 +2,15 @@ local Turtledove = class 'Turtledove'
 Turtledove:with(enemyAI, fsm)
 
 function Turtledove:init(x, y)
-	self.x = x
-	self.y = y
+	self.pos = vec.new(x, y)
 	self.w = 42
 	self.h = 16
 	self.vel = vec.new()
 	self.home = {x = 260, y = 102}
 	self.speed = 100
 
-	self.hp = 10
+	self.hp = 20
+	self.expDrop = 3
 
 	self.draw = true
 	self.ox = 10
@@ -25,7 +25,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self:stopMoving()
 
-				self.timer:after(random.num(2, 3.5),
+				self.timer:after(random.num(0.9, 2.9),
 					function()
 						self:switchState('Attack')
 					end)
@@ -33,7 +33,7 @@ function Turtledove:init(x, y)
 				self.spr = spr.turtledove.idle
 			end,
 			update = function(self)
-				self:moveTowardsPoint(self.goal.x, self.goal.y)
+				self:moveTowardsGoal()
 			end
 		},
 		Attack = {
@@ -50,7 +50,7 @@ function Turtledove:init(x, y)
 			end,
 			update = function(self)
 				--move towards attack spot
-				self:moveTowardsPoint(self.goal.x, self.goal.y)
+				self:moveTowardsGoal()
 
 				if self:atGoalPos() and self.goal.x ~= self.home.x then
 					self:stopMoving()
@@ -79,7 +79,7 @@ function Turtledove:init(x, y)
 			end,
 			update = function(self)
 				--move towards attack spot
-				self:moveTowardsPoint(self.goal.x, self.goal.y)
+				self:moveTowardsGoal(self.goal.x, self.goal.y)
 
 				if self:atGoalPos() and self.goal.x ~= self.home.x then
 					self:stopMoving()
@@ -109,8 +109,8 @@ end
 
 function Turtledove:spitBileBall()
 	local d = DamageBox:new{
-		x = self.x - 8,
-		y = self.y + 4,
+		x = self.pos.x - 8,
+		y = self.pos.y + 4,
 		w = 8, h = 5,
 		dmg = 1,
 		velx = -350 + random.num(20),

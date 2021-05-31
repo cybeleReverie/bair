@@ -27,7 +27,7 @@ THE SOFTWARE.
 local assert = assert
 local sqrt, cos, sin, atan2 = math.sqrt, math.cos, math.sin, math.atan2
 
-local vector = {}
+local vector = {name = 'vector'}
 vector.__index = vector
 
 local function new(x,y)

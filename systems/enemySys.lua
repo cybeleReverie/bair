@@ -3,13 +3,15 @@ enemySys.filter = tiny.requireAll('isEnemy')
 enemySys.isUpdateSys = true
 
 function enemySys:onAdd(e)
-	e.goal = {x = e.home.x, y = e.home.y}
+	e.goal = vec.new(e.home.x, e.home.y)
 
 	--collision callback
 	e.collide = function(this, other)
 		if other.name == 'DamageBox' then
 			this.damage = other.dmg
-			if other.dealer.state == other.dealer.states.Attack then this:switchState('Retreat') end
+			this:switchState('Retreat')
+			--only retreat from melee attacks:
+			--if other.dealer.state == other.dealer.states.Attack then this:switchState('Retreat') end
 		end
 	end
 
@@ -41,7 +43,7 @@ function enemySys:onAdd(e)
 		end,
 		update = function(this)
 			--move towards home
-			this:moveTowardsPoint(this.home.x, this.home.y)
+			this:moveTowardsGoal()
 
 			if this:atGoalPos() then
 				this:switchState('Idle')
@@ -57,7 +59,7 @@ function enemySys:onAdd(e)
 			this.spr = spr[string.lower(this.name)].idle
 		end,
 		update = function(this)
-			this:moveTowardsPoint(this.goal.x, this.goal.y, this.speed)
+			this:moveTowardsGoal()
 
 			if this:atGoalPos() then
 				this:switchState('Idle')
@@ -84,24 +86,7 @@ function enemySys:process(e, dt)
 end
 
 function enemySys:onRemove(e)
-	Timer.after(random.num(4, 6), function()
-		Signal.emit('spawnEncounter', random.weightedChoice({obstacle = 75, enemy = 25}))
-	end)
-end
-
---AI primitives
-local function moveTowardsPoint(ent, x, y, spd)
-	--calculate velocity towards point
-	ent.vel.x = x - ent.x
-	ent.vel.y = y - ent.y
-	ent.vel:normalizeInplace()
-	ent.vel = ent.vel * spd
-
-	--snap to goal if close enough
-	if ent:distToPoint(x, y) <= 5 then
-		ent.warpX = x
-		ent.warpY = y
-	end
+	Signal.emit('enemyDefeated', e)
 end
 
 return enemySys

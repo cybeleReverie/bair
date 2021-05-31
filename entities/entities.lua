@@ -1,12 +1,17 @@
 --mixins
-enemyAI = require 'entities/enemyAI'
-fsm = require 'entities/fsm'
+enemyAI = require 'entities/mixins/enemyAI'
+fsm = require 'entities/mixins/fsm'
 
 --entities
 Player = require 'entities/Player'
+Turtledove = require 'entities/enemies/Turtledove'
+
 Block = require 'entities/Block'
-Mapgen = require 'entities/Mapgen'
-Turtledove = require 'entities/Turtledove'
-DamageBox = require 'entities/DamageBox'
 Cosmetic = require 'entities/Cosmetic'
+TreasureChest = require 'entities/TreasureChest'
+DamageBox = require 'entities/DamageBox'
+
+Mapgen = require 'entities/Mapgen'
+
 Hud = require 'entities/Hud'
+PauseMenu = require 'entities/PauseMenu'

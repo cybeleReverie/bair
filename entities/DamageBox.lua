@@ -1,8 +1,7 @@
 local DamageBox = class 'DamageBox'
 
 function DamageBox:init(params)
-	self.x = params.x
-	self.y = params.y
+	self.pos = vec.new(params.x, params.y)
 	self.w = params.w
 	self.h = params.h
 	self.dmg = params.dmg
@@ -27,10 +26,13 @@ function DamageBox:init(params)
 
 	self.ox, self.oy = params.ox, params.oy
 
-	if not params.persistOnCollide then
-		self.collide = function(self, other)
-			if not other.ghost then ewo:remove(self) end
+	self.collide = function(self, other)
+		if self.dealer.name == 'Player' then
+			if other.isEnemy then ewo:remove(self) end
+		else
+			if other.name == 'Player' then ewo:remove(self) end
 		end
+		if other.isBlock or other.isSoftBlock then ewo:remove(self) end
 	end
 
 	ewo:add(self)

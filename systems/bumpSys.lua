@@ -1,13 +1,18 @@
 local bumpSys = tiny.processingSystem()
-bumpSys.filter = tiny.requireAll('x', 'y', 'w', 'h')
+bumpSys.filter = tiny.requireAll('pos', 'w', 'h')
 bumpSys.isUpdateSys = true
 
 function bumpSys:onAdd(e)
-	bwo:add(e, e.x, e.y, e.w, e.h)
-
 	if e.ghost == true then
 		e.filter = function(item, other) return 'cross' end
 	end
+
+	if e.scroll == true then
+		if not e.vel then e.vel = vec.new(-gs.Game.hspeed, 0)
+		else e.vel.x = e.vel.x - gs.Game.hspeed end
+	end
+
+	bwo:add(e, e.pos.x, e.pos.y, e.w, e.h)
 end
 
 function bumpSys:process(e, dt)
@@ -18,7 +23,7 @@ function bumpSys:process(e, dt)
 	end
 
 	--remove if offscreen
-	if e.x <= -48 or e.y <= -48 or e.x >= SCREEN_W + 350 or e.y >= SCREEN_H + 48 then
+	if e.pos.x <= -48 or e.pos.y <= -48 or e.pos.x >= SCREEN_W + 350 or e.pos.y >= SCREEN_H + 48 then
 		if not e.persistOffscreen then
 			ewo:remove(e)
 		end

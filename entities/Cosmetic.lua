@@ -1,21 +1,29 @@
 local Cosmetic = class 'Cosmetic'
 
-function Cosmetic:init(x, y, velx, vely, spr)
-	self.x = x
-	self.y = y
+function Cosmetic:init(params)
+	self.pos = vec.new(params.x, params.y)
+	self.w = params.w
+	self.h = params.h
 
-	if velx or vely then
-		self.w = 1
-		self.h = 1
-		self.vel = vec.new(velx or 0, vely or 0)
+	self.scroll = params.scroll
+
+	if params.velx or params.vely then
+		if not self.w then self.w = 1 end
+		if not self.h then self.h = 1 end
+		self.vel = vec.new(params.velx or 0, params.vely or 0)
 	end
 
-	self.ghost = true
+	self.gravity = params.gravity
+	self.update = params.update
+	self.collide = params.collide
 
-	self.spr = spr
---	self.spritesheet = params.spritesheet
+	if params.filter then self.filter = params.filter else self.ghost = true end
+
+	self.spr = params.spr
+	self.spritesheet = params.spritesheet
+	self.ox, self.oy = params.ox, params.oy
 	self.draw = true
-	self.depth = 10
+	self.depth = params.depth or 10
 
 	ewo:add(self)
 end

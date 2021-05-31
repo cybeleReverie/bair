@@ -17,8 +17,6 @@ function healthSys:process(e, dt)
 		if e.name ~= 'Player' then
 			ewo:remove(e)
 		else
-			ewo:clearEntities()
-			ewo:clearSystems()
 			Gamestate.switch(gs.GameOver)
 		end
 	end

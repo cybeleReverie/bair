@@ -24,6 +24,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
+local default
+local module = {}
+
 local Registry = {}
 Registry.__index = function(self, key)
 	return Registry[key] or (function()
@@ -58,6 +61,16 @@ function Registry:clear(...)
 	end
 end
 
+function Registry:clearAll()
+	default = Registry.new()
+	module = {}
+	for k in pairs(Registry) do
+		if k ~= "__index" then
+			module[k] = function(...) return default[k](default, ...) end
+		end
+	end
+end
+
 function Registry:emitPattern(p, ...)
 	for s in pairs(self) do
 		if s:match(p) then self:emit(s, ...) end
@@ -89,10 +102,9 @@ function Registry.new()
 end
 
 -- default instance
-local default = Registry.new()
+default = Registry.new()
 
 -- module forwards calls to default instance
-local module = {}
 for k in pairs(Registry) do
 	if k ~= "__index" then
 		module[k] = function(...) return default[k](default, ...) end

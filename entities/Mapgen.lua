@@ -1,8 +1,7 @@
 local Mapgen = class 'Mapgen'
 
 function Mapgen:init()
-	self.isMapgen = true --flag for mapgen system
-
+	self.isMapgen = true
 	self.enemyList = {
 		Turtledove
 	}
@@ -101,16 +100,19 @@ function Mapgen:buildFloor(x, y)
 					else
 						rt = 11
 					end
-					Cosmetic:new(bx, by, -gs.Game.hspeed, 0, groundTiles[rt])
-
-					Signal:emit('depthSort')
+					Cosmetic:new{
+						x = bx,
+						y = by,
+						velx = -gs.Game.hspeed,
+						spr = groundTiles[rt]
+					}
 				end
 			end
 
 			--designate one block as signal caller to build new floor
 			if i == 1 and j == 1 then
 				b.update = function(this)
-					if math.floor(this.x) <= 0 then
+					if math.floor(this.pos.x) <= 0 then
 						Signal.emit("buildNewFloor")
 						this.update = nil
 					end
@@ -122,17 +124,21 @@ end
 
 --chunks
 Mapgen.chunks = {
-	{{0, 0, 0, 0, 0},
-	 {0, 0, 0, 0, 0},
-	 {0, 0, 0, 0, 1},
-	 {1, 1, 0, 0, 1},
-	 {1, 1, 0, 0, 1}},
+	{terrain = [[....#
+				 ##..#
+				 ##..#]],
+	w = 5, h = 3,
+	key = {}},
 
-	{{1, 0, 0, 1},
-	 {0, 0, 0, 1},
- 	 {0, 0, 0, 0},
- 	 {1, 0, 0, 0},
- 	 {1, 0, 0, 1}}
+	{terrain = [[#..#
+				 ...#
+				 ....
+				 #...
+				 #..#]],
+	w = 4, h = 5,
+	key = {}},
+
+	require 'chunks/common/1'
 }
 
 return Mapgen

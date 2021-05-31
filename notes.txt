@@ -1,6 +1,23 @@
----todo---
-priority 1:
--ground tiles
+PRE-ALPHA DEMO V0.1:
+-completed HUD
+-implement formula for dependent stats (spell & attack windup time)
 
-priority 2:
--implement far claw
+-text console
+-a few sound effects
+-3 enemies
+
+-basic inventory & equipping
+-basic pause menu
+
+-metachunks
+-rolling
+
+---todo---
+-check for ground before attacking
+-dynamic timing for chunk generation intervals
+
+asset needs:
+-spell windup sprite (or short animation)?
+-spell casting sprite/anim
+-32x24 treasure chest
+-HUD elements
