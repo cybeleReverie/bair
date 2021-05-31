@@ -16,7 +16,7 @@ local img = {
 
 --animation frames
 local grid = {
-	bair = anim.newGrid(160, 40, img.bair:getDimensions()),
+	bair = anim.newGrid(160, 120, img.bair:getDimensions()),
 	turtledove = anim.newGrid(53, 30, img.turtledove:getDimensions()),
 	clawEffect = anim.newGrid(65, 39, img.clawEffect:getDimensions()),
 	spell16 = anim.newGrid(16, 16, img.spell16:getDimensions()),
@@ -25,16 +25,16 @@ local grid = {
 --animations
 local spr = {
 	bair = {
-		walk = anim.newAnimation(grid.bair('2-5', 1), 0.18),
-		jump = anim.newAnimation(grid.bair(27, 1), 1),
-		fall = anim.newAnimation(grid.bair(28, 1), 1),
-		hover = anim.newAnimation(grid.bair('24-26', 1), 0.065),
+		walk = anim.newAnimation(grid.bair('2-7', 1), 0.09),
+		jump = anim.newAnimation(grid.bair(35, 1), 1),
+		fall = anim.newAnimation(grid.bair(36, 1), 1),
+		hover = anim.newAnimation(grid.bair('32-34', 1), 0.065),
 
-		attackBasic = anim.newAnimation(grid.bair('6-23', 1),
+		attackBasic = anim.newAnimation(grid.bair('14-31', 1),
 			{['1-8'] = 0.058, ['9-18'] = 0.05}, 'pauseAtEnd'),
 
-		attackFarclaw = anim.newAnimation(grid.bair('29-39', 1),
-				{['1-5'] = 0.07, [6] = 5, ['7-11'] = 0.06}, 'pauseAtEnd'),
+		attackFarclaw = anim.newAnimation(grid.bair('37-47', 1),
+				{['1-5'] = 0.07, [6] = 5, ['6-11'] = 0.06}, 'pauseAtEnd'),
 
 		clawEffect = anim.newAnimation(grid.clawEffect('1-4', 1),
 				0.045, 'pauseAtEnd')

@@ -61,7 +61,7 @@ function mapgenSys:onAdd(e)
 		end),
 
 		Signal.register('spawnEncounter', function()
-			local encType = random.weightedChoice({obstacle = 5000, enemy = 50})
+			local encType = random.weightedChoice({obstacle = 50, enemy = 50})
 
 			if encType == 'obstacle' then
 				--build random obstacle

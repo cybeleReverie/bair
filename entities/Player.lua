@@ -194,7 +194,7 @@ function Player:init(x, y, playClass)
 	--graphics stuff
 	self.draw = Player.draw
 	self.ox = 9
-	self.oy = 12
+	self.oy = 92
 	self.depth = 10
 	self.opacity = 1
 
