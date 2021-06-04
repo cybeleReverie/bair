@@ -7,7 +7,7 @@ function enemySys:onAdd(e)
 
 	--collision callback
 	e.collide = function(this, other)
-		if other.name == 'DamageBox' then
+		if class.inheritsFrom(other, DamageBox) then
 			this.damage = other.dmg
 			this:switchState('Retreat')
 			--only retreat from melee attacks:

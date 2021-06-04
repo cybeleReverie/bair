@@ -167,7 +167,7 @@ function lume.push(t, ...)
   for i = 1, n do
     t[#t + 1] = select(i, ...)
   end
-  return ...
+  return t
 end
 
 
@@ -184,7 +184,7 @@ function lume.remove(t, x)
       end
     end
   end
-  return x
+  return t
 end
 
 
@@ -552,7 +552,6 @@ function lume.lambda(str)
   end
   return lambda_cache[str]
 end
-
 
 local serialize
 

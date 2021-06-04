@@ -13,6 +13,9 @@ PRE-ALPHA DEMO V0.1:
 -rolling
 
 ---todo---
+-running
+-turtledove turnaround
+-consolidate chunk generation
 -check for ground before attacking
 -dynamic timing for chunk generation intervals
 

@@ -5,13 +5,13 @@ function Cosmetic:init(params)
 	self.w = params.w
 	self.h = params.h
 
-	self.scroll = params.scroll
-
-	if params.velx or params.vely then
+	if params.velx or params.vely or params.scroll then
 		if not self.w then self.w = 1 end
 		if not self.h then self.h = 1 end
 		self.vel = vec.new(params.velx or 0, params.vely or 0)
+--		if params.scroll == true then self.vel.x = -gs.Game.hspeed end
 	end
+	self.scroll = params.scroll
 
 	self.gravity = params.gravity
 	self.update = params.update

@@ -4,7 +4,7 @@ local GameOver = {
 
 function GameOver:update(dt)
 	if Input:pressed('attack') then
-		love.event.quit('restart')
+		Gamestate.switch(gs.Game)
 	end
 end
 

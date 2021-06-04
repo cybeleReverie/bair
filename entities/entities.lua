@@ -6,10 +6,12 @@ fsm = require 'entities/mixins/fsm'
 Player = require 'entities/Player'
 Turtledove = require 'entities/enemies/Turtledove'
 
+Thing = require 'entities/Thing'
 Block = require 'entities/Block'
+DamageBox = require 'entities/DamageBox'
+Spike = require 'entities/Spike'
 Cosmetic = require 'entities/Cosmetic'
 TreasureChest = require 'entities/TreasureChest'
-DamageBox = require 'entities/DamageBox'
 
 Mapgen = require 'entities/Mapgen'
 

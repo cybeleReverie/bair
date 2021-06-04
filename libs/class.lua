@@ -95,6 +95,7 @@ setmetatable(baseMt, {__tostring = baseMt.__tostring})
 local class = {
 	isClass   = function(t) return not not _classes[t] end,
 	isInstance = function(t) return not not _instances[t] end,
+	inheritsFrom = function(t, c) if t.instanceOf then return t:instanceOf(c) end end
 }
 
 _class = function(name, attr)

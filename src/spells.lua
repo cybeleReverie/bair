@@ -3,7 +3,7 @@ local spell = {}
 --fireball
 spell.fireball = {
 	baseDamage = 1,
-	windupTime = 1.1,
+	windupTime = 0.7,
 	rechargeTime = 1.25,
 	cost = 1,
 
@@ -14,6 +14,7 @@ spell.fireball = {
 			w = 14, h = 12,
 			velx = 270,
 			dmg = caster.pow,
+			removeOnCollide = true,
 			dealer = caster,
 			spr = spr.spell.fireball, spritesheet = img.spell16,
 			ox = 2, oy = 3,

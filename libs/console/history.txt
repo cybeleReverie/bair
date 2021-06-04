@@ -1,19 +1,30 @@
-fuck
-gs.Game.player.x
-gs.Game.player.pos.x
-heyy
-print(hi)
-print('hi')
-exit
-'exit'
-player:switchState('Attack')
-gs.Game.player:switchState('Attack')
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-Game.mapgen.spawnEnemy(Game.mapgen)
-Game.mapgen.spawnEnemy)()
-Game.mapgen:spawnEnemy()
-gs.Game.mapgen:spawnEnemy()
-drawHitboxes = true
+gs.Game.player.hp = 5
+drawHitboxes=true
+drawHitboxes=false
+drawHitboxes=false
+gs.Game.player.hp = 5
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=false
+drawHitboxes=false
+drawHitboxes=false
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=true
+gs.Game.player.hp = 5
+drawHitboxes=true
+gs.Game.player.hp = 5
+drawHitboxes=true
+drawHitboxes=true
+drawHitboxes=false
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5

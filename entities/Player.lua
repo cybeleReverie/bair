@@ -38,7 +38,7 @@ function Player:init(x, y, playClass)
 	self.pow = 1
 	self.mag = 1
 
-	self.maxHovTime = 0.5;	self.hovTime = self.maxHovTime
+	self.maxHovTime = 0.6;	self.hovTime = self.maxHovTime
 	self.mpRegenSpeed = 8
 
 	self.skillPoints = {
@@ -49,6 +49,7 @@ function Player:init(x, y, playClass)
 
 	self.jumpHeight = 290
 	self.canAttack = true
+	self.isRunning = false
 
 	--moveset
 	self.attacks = {
@@ -78,7 +79,11 @@ function Player:init(x, y, playClass)
 				self.hovTime = self.maxHovTime
 				self.gravity = true
 
-				self:changeSprite(spr.bair.walk)
+				if self.isRunning == true then
+					self:changeSprite(spr.bair.run)
+				else
+					self:changeSprite(spr.bair.walk)
+				end
 			end,
 			update = function(self)
 				self.vel.y = 0
@@ -119,7 +124,7 @@ function Player:init(x, y, playClass)
 
 				if Input:released('jump') then
 					--shorten jump height if jumping
-					if self.vel.y < 0 then self.vel.y = self.vel.y / 1.8 end
+					if self.vel.y < 0 then self.vel.y = self.vel.y / 2.2 end
 				end
 
 				if self.vel.y < 0 then
@@ -262,8 +267,28 @@ function Player:update(dt)
 		end
 	end
 
+	local runTimer
+	if Input:down('run') and self:inState('Walk') then
+		if self.isRunning == false then
+			Signal.emit('toggleRun')
+			self.isRunning = true
+
+			self:changeSprite(spr.bair.run)
+		end
+	end
+	if Input:released('run') then
+		if self.isRunning == true then
+			Signal.emit('toggleRun')
+			self.isRunning = false
+
+			if self:inState('Walk') then
+				self:changeSprite(spr.bair.walk)
+			end
+		end
+	end
+
 	--select attack
-	if self.state ~= self.states.Attack and self.canAttack == true then
+	if self:getState() ~= 'Attack' and self.canAttack == true then
 		local atk, spl = 5, 3
 
 		if Input:down('right') then atk = atk + 1; spl = spl + 1 end
@@ -280,7 +305,12 @@ end
 function Player:endSpell()
 	if self.curSpell.exit then self.curSpell.exit(self) end
 
-	local splRechargeTime = math.max(self.curSpell.rechargeTime - self.int * 0.075, 0)
+	local splRechargeTime
+	if not self.spellLag then
+		splRechargeTime = math.max(self.curSpell.rechargeTime - self.int * 0.075, 0)
+	else
+		splRechargeTime = math.max(self.curSpell.rechargeTime - self.int * 0.075, 0) / 2.5
+	end
 	if not self.blinking and self.casting == true then
 		self.blinking = {splRechargeTime, '#52fffa'}
 	end
@@ -302,34 +332,27 @@ end
 
 --collision callback
 function Player:collide(other)
-	if other.isEnemy or other.name == 'DamageBox' then
-		--take damage
+	if other.isEnemy or class.inheritsFrom(other, DamageBox) then
 		self.damage = 1
-		self.gravity = true
-		if self.state == self.states.Hover then self:switchState('InAir') end
+--		self.gravity = true
+--		if self:inState('Hover') then self:switchState('InAir') end
 	end
 end
 
 --utilities
 function Player:checkOnGround()
 	local q = bwo:queryRect(self.pos.x, self.pos.y + self.h, self.w, 1)
-	local grounded = false
-	lume.each(q, function(i) if i.name == 'Block' then grounded = true end end)
-	return grounded
+	return lume.any(q, function(i) return i.isBlock end)
 end
 
 function Player:checkHBlockCollision(x, y)
 	local q = bwo:queryRect(x or self.pos.x, y or self.pos.y, self.w, self.h)
-	local collision = false
-	lume.each(q, function(i) if i.name == 'Block' then collision = true end end)
-	return collision
+	return lume.any(q, function(i) return i.isBlock end)
 end
 
 function Player:checkHeadBump()
 	local q = bwo:queryRect(self.pos.x, self.pos.y - 1, self.w, 1)
-	local bumped = false
-	lume.each(q, function(i) if i.name == 'Block' then bumped = true end end)
-	return bumped
+	return lume.any(q, function(i) return i.isBlock end)
 end
 
 function Player:closeEnough()

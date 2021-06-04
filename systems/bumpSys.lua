@@ -7,18 +7,18 @@ function bumpSys:onAdd(e)
 		e.filter = function(item, other) return 'cross' end
 	end
 
-	if e.scroll == true then
-		if not e.vel then e.vel = vec.new(-gs.Game.hspeed, 0)
-		else e.vel.x = e.vel.x - gs.Game.hspeed end
+	if e.scroll then
+		if not e.vel then e.vel = vec.new(0, 0) end
 	end
 
 	bwo:add(e, e.pos.x, e.pos.y, e.w, e.h)
 end
 
+local handleCollision = function(x, e) e:collide(x.other) end
 function bumpSys:process(e, dt)
 	--handle collisions
 	if e.collide and e.cols then
-		lume.each(e.cols, function(x) e:collide(x.other) end)
+		lume.each(e.cols, handleCollision, e)
 		e.cols = nil
 	end
 

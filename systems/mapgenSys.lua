@@ -37,7 +37,13 @@ local function buildChunk(this, x, y, chunk)
 			xx, yy = x + i * 24 - 24, yOff + j * 24 - 24 + y * 24
 
 			cur = chunk.key[chunk.terrain[i][j]] or defChunkKey[chunk.terrain[i][j]]
-			if cur then cur:new(xx, yy).scroll = true end
+			if cur then
+				if class.isClass(cur) then
+					cur:new(xx, yy).scroll = true
+				else
+					cur[1]:new(xx, yy, unpack(lume.slice(cur, 2, #cur)))
+				end
+			end
 		end
 	end
 end
@@ -46,13 +52,89 @@ local function spawnEnemy(this)
 	this.enemyList[#this.enemyList]:new(320, 81)
 end
 
-function mapgenSys:onAdd(e)
-	--min/max encounter timer bounds (in seconds)
-	e.encTimer = {12, 15}
+local function genChallengeRoom(w, h)
+	local obstacles = {spike = 70, block = 30}
+	local path = {}
+	local chunk = {
+		terrain = util.newMatrix(w, h, 0),
+		w = w, h = h,
+		key = {
+			block = Block,
+			spikeU = {Spike, 'up'},
+			spikeR = {Spike, 'right'},
+			spikeBH = {Spike, 'blockHor'},
+			spikeBV = {Spike, 'blockVer'},
+			spikeBB = {Spike, 'blockBi'}}
+	}
 
+	local prev
+	local cur = {}
+	cur.y = h
+	cur.item = 'spike'
+
+	for i = 1, w do
+		if i > 1 then
+			prev =  cur
+			cur = {}
+			cur.y = random.num(h)
+			cur.item = random.weightedChoice(obstacles)
+			if cur.item == 'block' then
+				if cur.y == h or prev.item == 'block' then cur.item = 'spike' end
+			end
+
+			if cur.item == 'spike' then
+				if prev.item == 'spikeBV' or prev.item == 'spikeBB' then
+					cur.item = 'spikeBH'
+				elseif prev.item == 'spikeU' then
+					cur.item = 'spikeBH'
+					cur.y = prev.y - random.num(2)
+				elseif prev.item == 'block' and cur.y == prev.y then
+					cur.item = 'spikeR'
+				end
+			end
+		end
+		if i == 2 then cur.y = random.num(h - 2, h) end
+
+		if cur.y ~= h then
+			if cur.item == 'spike' then cur.item = random.choice({'spikeBH', 'spikeBV', 'spikeBB'}) end
+		else
+			if cur.item == 'spike' then cur.item = 'spikeU' end
+		end
+
+		if prev then
+			if prev.item == 'spikeBH' and cur.item == 'spikeBH' then
+				if prev.y == cur.y then
+					if random.chance(2) then
+						cur.item = random.choice({'spikeBV', 'spikeBB'})
+					else
+						while cur.y == prev.y do
+							cur.y = random.num(h)
+						end
+					end
+				end
+			end
+			if prev.y == cur.y - 2 and (prev.item == 'spikeBB' or prev.item == 'spikeBV') then
+				if cur.y < h then cur.y = cur.y + 1
+				else prev.item = 'spikeBH' end
+				print 'hi'
+			end
+		end
+
+		table.insert(path, cur)
+	end
+
+	for i in ipairs(path) do
+		chunk.terrain[i][path[i].y] = path[i].item
+	end
+
+	return chunk
+end
+
+function mapgenSys:onAdd(e)
 	--load chunks
 	--move to more optimal place so it's only called once for each chunk in the entire game
 	lume.each(e.chunks, function(i) i.terrain = matrixFromChunk(i) end)
+	local testRoom = genChallengeRoom(random.num(5, 7), random.num(3, 4))
 
 	--signal registry
 	e.signalRegistry = {
@@ -61,15 +143,22 @@ function mapgenSys:onAdd(e)
 		end),
 
 		Signal.register('spawnEncounter', function()
-			local encType = random.weightedChoice({obstacle = 50, enemy = 50})
+			local encType = random.weightedChoice({obstacle = 500000000, enemy = 50})
 
 			if encType == 'obstacle' then
-				--build random obstacle
-				e:buildChunk(320, 0, e.chunks[random.num(#e.chunks)])
+				local obst
+				--build either ranadom chunk or procedural challenge room
+				if random.chance(1) then
+--					obst = genChallengeRoom(5, 4)
+					obst = testRoom
+				else
+					obst = e.chunks[random.num(#e.chunks)]
+				end
+				e:buildChunk(320, 0, obst)
 
 				--set timer for next obstacle
 				 --make dynamic timing
-				Timer.after(random.num(e.encTimer[1], e.encTimer[2]), function()
+				Timer.after(random.num(obst.w, obst.w + 3), function()
 					Signal.emit('spawnEncounter')
 				end)
 			elseif encType == 'enemy' then

@@ -8,6 +8,7 @@ function Turtledove:init(x, y)
 	self.vel = vec.new()
 	self.home = {x = 260, y = 102}
 	self.speed = 100
+	self.persistOffscreen = true
 
 	self.hp = 20
 	self.expDrop = 3
@@ -25,7 +26,7 @@ function Turtledove:init(x, y)
 				--stay still
 				self:stopMoving()
 
-				self.timer:after(random.num(0.9, 2.9),
+				self.timer:after(random.num(0.5, 1.5),
 					function()
 						self:switchState('Attack')
 					end)
@@ -61,10 +62,10 @@ function Turtledove:init(x, y)
 			--air rush
 			{callback = function(self)
 				self.timer:after(0.2, function()
-					self:setGoalPos(24, self.home.y)
+					self:setGoalPos(-85, self.home.y)
 
 					--switch from ground to air
-					self.timer:tween(0.25, self.goal, {y = 48}, 'cubic')
+					self.timer:tween(0.25, self.goal, {y = 12}, 'quint')
 					self:setSpeed(random.num(280, 400))
 
 					self.spr = spr.turtledove.rush
@@ -82,7 +83,13 @@ function Turtledove:init(x, y)
 				self:moveTowardsGoal(self.goal.x, self.goal.y)
 
 				if self:atGoalPos() and self.goal.x ~= self.home.x then
-					self:stopMoving()
+					self.timer:after(0.2, function()
+						self:setSpeed(random.num(230, 250))
+						self:setGoalPos(64, 94)
+						self.spr = spr.turtledove.idle
+					end)
+				end
+				if self.pos.x == 64 and self.pos.y == 94 then
 					self:switchState('Retreat')
 				end
 			end},
@@ -114,6 +121,7 @@ function Turtledove:spitBileBall()
 		w = 8, h = 5,
 		dmg = 1,
 		velx = -350 + random.num(20),
+		removeOnCollide = true,
 		dealer = self,
 		spr = img.bileBall
 	}

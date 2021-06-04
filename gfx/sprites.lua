@@ -11,7 +11,8 @@ local img = {
 	clawEffect = lg.newImage('gfx/clawEffect.png'),
 	spell16 = lg.newImage('gfx/spell16.png'),
 	items = lg.newImage('gfx/items.png'),
-	treasureChest = lg.newImage('gfx/treasureChest.png')
+	treasureChest = lg.newImage('gfx/treasureChest.png'),
+	spike = lg.newImage('gfx/spike.png'),
 }
 
 --animation frames
@@ -26,6 +27,7 @@ local grid = {
 local spr = {
 	bair = {
 		walk = anim.newAnimation(grid.bair('2-7', 1), 0.09),
+		run = anim.newAnimation(grid.bair('8-13', 1), 0.09),
 		jump = anim.newAnimation(grid.bair(35, 1), 1),
 		fall = anim.newAnimation(grid.bair(36, 1), 1),
 		hover = anim.newAnimation(grid.bair('32-34', 1), 0.065),
@@ -65,6 +67,15 @@ local tile = {
 		rootL = {6, 1, 48, 48},
 		rootD = {8, 1, 24, 48},
 		rootR = {9, 1, 48, 48}
+	}),
+	spike = tile.newSet(img.spike, 24, 24, {
+		up = {1, 1},
+		right = {2, 1},
+		down = {3, 1},
+		left = {4, 1},
+		blockHor = {5, 1},
+		blockVer = {6, 1},
+		blockBi = {7, 1}
 	}),
 	hud = tile.newSet(img.hud, 8, 8, {
 		heart = {1, 1},

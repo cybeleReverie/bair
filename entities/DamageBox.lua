@@ -6,9 +6,10 @@ function DamageBox:init(params)
 	self.h = params.h
 	self.dmg = params.dmg
 	self.vel = vec.new(params.velx or 0, params.vely or 0)
+	self.scroll = params.scroll
 	self.dealer = params.dealer
-
 	self.ghost = true
+	self.removeOnCollide = params.removeOnCollide
 
 	if params.decay then
 		Timer.after(params.decay, function() ewo:remove(self) end)
@@ -26,14 +27,14 @@ function DamageBox:init(params)
 
 	self.ox, self.oy = params.ox, params.oy
 
-	self.collide = function(self, other)
+	if self.removeOnCollide then self.collide = function(self, other)
 		if self.dealer.name == 'Player' then
 			if other.isEnemy then ewo:remove(self) end
 		else
 			if other.name == 'Player' then ewo:remove(self) end
 		end
-		if other.isBlock or other.isSoftBlock then ewo:remove(self) end
-	end
+		if (other.isBlock or other.isSoftBlock) then ewo:remove(self) end
+	end end
 
 	ewo:add(self)
 end

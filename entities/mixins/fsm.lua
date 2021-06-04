@@ -23,4 +23,12 @@ function fsm:updateState(dt)
 	if self.state.update then self.state.update(self, dt) end
 end
 
+function fsm:getState()
+	return lume.find(self.states, self.state)
+end
+
+function fsm:inState(s)
+	return self:getState() == s
+end
+
 return fsm

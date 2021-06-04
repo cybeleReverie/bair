@@ -84,7 +84,8 @@ function Mapgen:buildFloor(x, y)
 				x + i * 24 - 24,
 				y + j * 24 + 4.5 * 24
 
-			b = Block:new(bx, by, -gs.Game.hspeed)
+			b = Block:new(bx, by)
+			b.scroll = true
 			b.spr = groundTiles[floor[i][j]]
 
 			if floor[i][j] == 1 or floor[i][j] == 8 then
@@ -103,7 +104,7 @@ function Mapgen:buildFloor(x, y)
 					Cosmetic:new{
 						x = bx,
 						y = by,
-						velx = -gs.Game.hspeed,
+						scroll = true,
 						spr = groundTiles[rt]
 					}
 				end

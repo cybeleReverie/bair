@@ -28,6 +28,14 @@ function util.deepCopy(orig)
     return copy
 end
 
+function util.tableLen(t)
+	local len = 0
+	for k, v in pairs(t) do
+		len = len + 1
+	end
+	return len
+end
+
 function random.chance(prob)
 	return math.random(prob) == 1
 end

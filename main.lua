@@ -1,4 +1,6 @@
 function love.load()
+	math.randomseed(os.time())
+
 	--debug stuff
 	drawHitboxes = false
 
@@ -52,12 +54,12 @@ function love.load()
 	ecsDrawSys = tiny.requireAll('isDrawSys')
 
 	--
-	math.randomseed(os.time())
 	lg.setLineStyle("rough")
 	Gamestate.registerEvents()
 
 	--bind inputs
 	Input = input()
+	Input:bind('lshift', 'run')
 	Input:bind('z', 'jump')
 	Input:bind('x', 'attack')
 	Input:bind('c', 'cast')

@@ -1,4 +1,5 @@
 local Game = {
+	defSpeed = 45,
 	hspeed = 45,
 	camera = Camera(320 / 2, 180 / 2, 3),
 }
@@ -61,9 +62,8 @@ function Game:draw()
 	lg.scale(1, 1)
 end
 
-function Game:exit()
+function Game:leave()
 	ewo:clearEntities()
-	ewo:clearSystems()
 	Signal.clearAll()
 end
 
