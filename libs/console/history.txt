@@ -1,14 +1,3 @@
-#Registry
-print(#Registry)
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
 gs.Game.player.hp = 0
 gs.Game.player.hp = 0
 gs.Game.player.hp = 5
@@ -28,3 +17,14 @@ drawHitboxes = true
 Spike:new(24,48,'left')
 drawHitboxes = true
 gs.Game.player.hp = 0
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+gs.Game.player.hp = 0
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+drawHitboxes = true

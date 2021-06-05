@@ -9,20 +9,19 @@ function Spike:init(x, y, subtype)
 	if subtype == 'left' or subtype == 'right' or subtype == 'up' or subtype == 'down' then
 		if subtype == 'left' then
 			xx = x + 8
-			w = 16
-			h = 24
-			ox = 8
+			yy = yy + 2
+			w, h = 16, 20
+			ox, oy = 8, 2
 		elseif subtype == 'right' then
-			w = 16
-			h = 24
+			yy = yy + 2
+			w, h = 16, 20
+			oy = 2
 		elseif subtype == 'up' then
 			yy = y + 8
-			w = 24
-			h = 16
+			w, h = 24, 16
 			oy = 8
 		elseif subtype == 'down' then
-			w = 24
-			h = 16
+			w, h = 24, 16
 		end
 
 		Spike.super.init(self, {

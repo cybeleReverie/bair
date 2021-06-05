@@ -71,7 +71,7 @@ local function genChallengeRoom(w, h)
 	local prev
 	local cur = {}
 	cur.y = h
-	cur.item = random.weightedChoice({spike = 75, block = 25})
+	cur.item = random.weightedChoice({spike = 70, block = 30})
 
 	for i = 1, w do
 		if i > 1 then
@@ -79,6 +79,9 @@ local function genChallengeRoom(w, h)
 			cur = {}
 			cur.y = random.num(h)
 			cur.item = random.weightedChoice(obstacles)
+
+			if i == 2 then cur.y = random.num(h - 2, h - 1) end
+
 			if cur.item == 'block' then
 				if cur.y == h or prev.item == 'block' then cur.item = 'spike'
 				elseif prev.item == 'spikeBH' and cur.y >= h - 2 and cur.y == prev.y then
@@ -97,7 +100,6 @@ local function genChallengeRoom(w, h)
 				end
 			end
 		end
-		if i == 2 then cur.y = random.num(h - 2, h - 1) end
 
 		if cur.y ~= h then
 			if cur.item == 'spike' then cur.item = random.choice({'spikeBH', 'spikeBV', 'spikeBB'}) end
