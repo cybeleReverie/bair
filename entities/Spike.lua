@@ -2,17 +2,37 @@ local Spike = DamageBox:extend('Spike')
 
 function Spike:init(x, y, subtype)
 	local sprite = tile.spike[subtype]
+	local xx, yy = x, y
+	local w, h
+	local ox, oy = 0, 0
 
 	if subtype == 'left' or subtype == 'right' or subtype == 'up' or subtype == 'down' then
+		if subtype == 'left' then
+			xx = x + 8
+			w = 16
+			h = 24
+			ox = 8
+		elseif subtype == 'right' then
+			w = 16
+			h = 24
+		elseif subtype == 'up' then
+			yy = y + 8
+			w = 24
+			h = 16
+			oy = 8
+		elseif subtype == 'down' then
+			w = 24
+			h = 16
+		end
+
 		Spike.super.init(self, {
-			x = x, y = y,
-			w = 20, h = 24,
+			x = xx, y = yy,
+			w = w, h = h,
 			dmg = 2,
 			scroll = true,
-			ox = 2, oy = 0,
+			ox = ox, oy = oy,
 			spr = sprite
 		})
-		if subtype == 'left' or subtype == 'right' then self.ox = 0 end
 	else
 		--block part
 		ewo:add{

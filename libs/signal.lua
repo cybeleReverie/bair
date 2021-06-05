@@ -61,16 +61,6 @@ function Registry:clear(...)
 	end
 end
 
-function Registry:clearAll()
-	default = Registry.new()
-	module = {}
-	for k in pairs(Registry) do
-		if k ~= "__index" then
-			module[k] = function(...) return default[k](default, ...) end
-		end
-	end
-end
-
 function Registry:emitPattern(p, ...)
 	for s in pairs(self) do
 		if s:match(p) then self:emit(s, ...) end

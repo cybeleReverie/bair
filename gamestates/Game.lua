@@ -4,7 +4,23 @@ local Game = {
 	camera = Camera(320 / 2, 180 / 2, 3),
 }
 
-function Game:enter()
+function Game:enter(previous, signalRegistry)
+	--init signal registry
+	if not self.signal then self.signal = signalRegistry end
+
+	--add game systems
+	ewo:refresh()
+	ewo:add(
+		require 'systems/drawSys',
+		require 'systems/depthDrawSys',
+		require 'systems/mapgenSys',
+		require 'systems/bumpSys',
+		require 'systems/moveSys',
+		require 'systems/updateLoopSys',
+		require 'systems/healthSys',
+		require 'systems/enemySys'
+	)
+
 	Game.player = Player:new(16, 104, playerClass.warrior)
 	Game.mapgen = Mapgen:new()
 	Game.hud = Hud:new()
@@ -63,8 +79,10 @@ function Game:draw()
 end
 
 function Game:leave()
+	Timer.clear()
+	Game.signal:clearPattern('.*')
 	ewo:clearEntities()
-	Signal.clearAll()
+	ewo:clearSystems()
 end
 
 return Game

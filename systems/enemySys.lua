@@ -86,7 +86,7 @@ function enemySys:process(e, dt)
 end
 
 function enemySys:onRemove(e)
-	Signal.emit('enemyDefeated', e)
+	gs.Game.signal:emit('enemyDefeated', e)
 end
 
 return enemySys

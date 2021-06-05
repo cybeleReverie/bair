@@ -62,6 +62,7 @@ local function genChallengeRoom(w, h)
 			block = Block,
 			spikeU = {Spike, 'up'},
 			spikeR = {Spike, 'right'},
+			spikeL = {Spike, 'left'},
 			spikeBH = {Spike, 'blockHor'},
 			spikeBV = {Spike, 'blockVer'},
 			spikeBB = {Spike, 'blockBi'}}
@@ -70,7 +71,7 @@ local function genChallengeRoom(w, h)
 	local prev
 	local cur = {}
 	cur.y = h
-	cur.item = 'spike'
+	cur.item = random.weightedChoice({spike = 75, block = 25})
 
 	for i = 1, w do
 		if i > 1 then
@@ -79,7 +80,10 @@ local function genChallengeRoom(w, h)
 			cur.y = random.num(h)
 			cur.item = random.weightedChoice(obstacles)
 			if cur.item == 'block' then
-				if cur.y == h or prev.item == 'block' then cur.item = 'spike' end
+				if cur.y == h or prev.item == 'block' then cur.item = 'spike'
+				elseif prev.item == 'spikeBH' and cur.y >= h - 2 and cur.y == prev.y then
+					prev.item = 'spikeL'
+				end
 			end
 
 			if cur.item == 'spike' then
@@ -93,7 +97,7 @@ local function genChallengeRoom(w, h)
 				end
 			end
 		end
-		if i == 2 then cur.y = random.num(h - 2, h) end
+		if i == 2 then cur.y = random.num(h - 2, h - 1) end
 
 		if cur.y ~= h then
 			if cur.item == 'spike' then cur.item = random.choice({'spikeBH', 'spikeBV', 'spikeBB'}) end
@@ -112,11 +116,13 @@ local function genChallengeRoom(w, h)
 						end
 					end
 				end
+				if prev.y == cur.y + 2 and (prev.item == 'block' or prev.item == 'spikeBH') then
+					cur.item = random.choice({'block', 'spikeBH'})
+				end
 			end
 			if prev.y == cur.y - 2 and (prev.item == 'spikeBB' or prev.item == 'spikeBV') then
 				if cur.y < h then cur.y = cur.y + 1
 				else prev.item = 'spikeBH' end
-				print 'hi'
 			end
 		end
 
@@ -130,6 +136,10 @@ local function genChallengeRoom(w, h)
 	return chunk
 end
 
+function mapgenSys:onAddToWorld()
+	self.timer = Timer.new()
+end
+
 function mapgenSys:onAdd(e)
 	--load chunks
 	--move to more optimal place so it's only called once for each chunk in the entire game
@@ -137,52 +147,58 @@ function mapgenSys:onAdd(e)
 	local testRoom = genChallengeRoom(random.num(5, 7), random.num(3, 4))
 
 	--signal registry
-	e.signalRegistry = {
-		Signal.register('buildNewFloor', function()
-			e:buildFloor(24 * 14, 0)
-		end),
+	gs.Game.signal:register('buildNewFloor', function()
+		e:buildFloor(24 * 14, 0)
+	end)
 
-		Signal.register('spawnEncounter', function()
-			local encType = random.weightedChoice({obstacle = 500000000, enemy = 50})
+	gs.Game.signal:register('spawnEncounter', function()
+		local encType = random.weightedChoice({obstacle = 500000000, enemy = 50})
 
-			if encType == 'obstacle' then
-				local obst
-				--build either ranadom chunk or procedural challenge room
-				if random.chance(1) then
---					obst = genChallengeRoom(5, 4)
-					obst = testRoom
-				else
-					obst = e.chunks[random.num(#e.chunks)]
-				end
-				e:buildChunk(320, 0, obst)
+		if encType == 'obstacle' then
+			local obst
 
-				--set timer for next obstacle
-				 --make dynamic timing
-				Timer.after(random.num(obst.w, obst.w + 3), function()
-					Signal.emit('spawnEncounter')
-				end)
-			elseif encType == 'enemy' then
-				e:spawnEnemy()
+			--build either ranadom chunk or procedural challenge room
+			if random.chance(1) then
+				obst = genChallengeRoom(5, 4)
+				obst = testRoom
+			else
+				obst = e.chunks[random.num(#e.chunks)]
 			end
-		end),
+			e:buildChunk(320, 0, obst)
 
-		Signal.register('enemyDefeated', function()
-			Timer.after(random.num(3, 5), function() Signal.emit('spawnEncounter') end)
-		end),
-	}
+			--set timer for next obstacle
+			self.timer:after(random.num(obst.w, obst.w + 2), function()
+				gs.Game.signal:emit('spawnEncounter')
+			end)
+		elseif encType == 'enemy' then
+			e:spawnEnemy()
+		end
+	end)
+
+	gs.Game.signal:register('enemyDefeated', function()
+		self.timer:after(random.num(3, 5), function() gs.Game.signal:emit('spawnEncounter') end)
+	end)
 
 	--common mapgen methods
 	e.buildChunk = buildChunk
 	e.spawnEnemy = spawnEnemy
 
 	--spawn first encounter
-	Signal.emit('spawnEncounter')
+	gs.Game.signal:emit('spawnEncounter')
 
 	--build floor
 	e:buildFloor(1, 0)
 end
 
+function mapgenSys:update(dt)
+	self.timer:update(dt)
+end
+
 function mapgenSys:process(e, dt)
+end
+
+function mapgenSys:onRemoveFromWorld()
+	self.timer:clear()
 end
 
 return mapgenSys

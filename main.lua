@@ -37,16 +37,7 @@ function love.load()
 	item = require 'src/items'
 
 	--initialize ECS and Bump world
-	ewo = tiny.world(
-		require 'systems/drawSys',
-		require 'systems/depthDrawSys',
-		require 'systems/mapgenSys',
-		require 'systems/bumpSys',
-		require 'systems/moveSys',
-		require 'systems/updateLoopSys',
-		require 'systems/healthSys',
-		require 'systems/enemySys'
-	)
+	ewo = tiny.world()
 	bwo = bump.newWorld()
 
 	--ECS draw system filter
@@ -75,7 +66,7 @@ function love.load()
 	pause = false
 	shapesCanvas = love.graphics.newCanvas(320, 180)
 
-	Gamestate.switch(gs.Game)
+	Gamestate.switch(gs.Game, Signal.new())
 end
 
 function love.textinput(text)

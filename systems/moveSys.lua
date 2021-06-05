@@ -2,19 +2,23 @@ local moveSys = tiny.processingSystem()
 moveSys.filter = tiny.requireAll('vel', 'pos')
 moveSys.isUpdateSys = true
 
-local running = false
-Signal.register('toggleRun', function()
-	running = not running
-	if running == true then
-		gs.Game.hspeed = gs.Game.hspeed + 20
-	else
-		if gs.Game.player:checkOnGround() then
-			gs.Game.hspeed = gs.Game.defSpeed
+local running
+
+function moveSys:onAddToWorld()
+	gs.Game.signal:register('toggleRun', function()
+		running = not running
+		if running == true then
+			gs.Game.hspeed = gs.Game.hspeed + 20
 		else
-			Timer.tween(0.7, gs.Game, {hspeed = gs.Game.defSpeed}, 'linear')
+			if gs.Game.player:checkOnGround() then
+				gs.Game.hspeed = gs.Game.defSpeed
+			else
+				Timer.tween(0.7, gs.Game, {hspeed = gs.Game.defSpeed}, 'linear')
+			end
 		end
-	end
-end)
+	end)
+	if running == true then gs.Game.signal:emit('toggleRun') end
+end
 
 local gx, gy, scrollSpeed
 function moveSys:process(e, dt)

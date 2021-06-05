@@ -114,7 +114,7 @@ function Mapgen:buildFloor(x, y)
 			if i == 1 and j == 1 then
 				b.update = function(this)
 					if math.floor(this.pos.x) <= 0 then
-						Signal.emit("buildNewFloor")
+						gs.Game.signal:emit("buildNewFloor")
 						this.update = nil
 					end
 				end

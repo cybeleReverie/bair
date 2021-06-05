@@ -187,7 +187,7 @@ function Player:init(x, y, playClass)
 	self:switchState('Walk')
 
 	--
-	Signal.register('enemyDefeated', function(enemy) self.exp = self.exp + enemy.expDrop end)
+	gs.Game.signal:register('enemyDefeated', function(enemy) self.exp = self.exp + enemy.expDrop end)
 
 	--bump filter
 	self.filter = function(item, other)
@@ -270,7 +270,7 @@ function Player:update(dt)
 	local runTimer
 	if Input:down('run') and self:inState('Walk') then
 		if self.isRunning == false then
-			Signal.emit('toggleRun')
+			gs.Game.signal:emit('toggleRun')
 			self.isRunning = true
 
 			self:changeSprite(spr.bair.run)
@@ -278,7 +278,7 @@ function Player:update(dt)
 	end
 	if Input:released('run') then
 		if self.isRunning == true then
-			Signal.emit('toggleRun')
+			gs.Game.signal:emit('toggleRun')
 			self.isRunning = false
 
 			if self:inState('Walk') then

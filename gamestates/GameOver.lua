@@ -2,6 +2,9 @@ local GameOver = {
 	camera = Camera(320 / 2, 180 / 2, 3)
 }
 
+function GameOver:enter()
+end
+
 function GameOver:update(dt)
 	if Input:pressed('attack') then
 		Gamestate.switch(gs.Game)
