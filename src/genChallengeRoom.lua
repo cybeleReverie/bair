@@ -125,7 +125,6 @@ function genChallengeRoom(w, h)
 			--no impossible triple obstacles
 			if i > 2 and checkDoubleHazard(path, i) then
 				cur.item = random.choice(blockHSpikeOrNil)
-				goto adjust
 			end
 
 			--context sensitive spikes
