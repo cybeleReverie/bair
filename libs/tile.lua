@@ -5,7 +5,7 @@ function tile.newSet(img, w, h, tiles)
 	local ct
 
 	for k, v in pairs(tiles) do
-		ct = tiles[k] --current tile
+		ct = v --current tile
 		local tx, ty, tw, th = --current tile pos and dimensions
 			ct[1] * w - w,
 			ct[2] * h - h,

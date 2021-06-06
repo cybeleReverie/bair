@@ -1,5 +1,13 @@
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = false
 gs.Game.player.hp = 5
 gs.Game.player.hp = 5
 gs.Game.player.hp = 0
@@ -7,24 +15,16 @@ gs.Game.player.hp = 0
 gs.Game.player.hp = 0
 gs.Game.player.hp = 0
 gs.Game.player.hp = 0
-drawHitboxes = true
-Block:new(48,48)
-Spike:new(24,48,'left')
-Block:new(48,48)
-Spike:new(24,48,'left')
-drawHitboxes = true
-drawHitboxes = true
-Spike:new(24,48,'left')
-drawHitboxes = true
-gs.Game.player.hp = 0
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
 gs.Game.player.hp = 0
 gs.Game.player.hp = 5
 gs.Game.player.hp = 5
+drawHitboxes = true
+drawHitboxes = true
 gs.Game.player.hp = 5
 gs.Game.player.hp = 5
+gs.Game.player.spellLag
 gs.Game.player.hp = 5
 drawHitboxes = true
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5

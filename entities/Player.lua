@@ -47,7 +47,7 @@ function Player:init(x, y, playClass)
 		self.playClass.trees[3].color
 	}
 
-	self.jumpHeight = 290
+	self.jumpHeight = 295
 	self.canAttack = true
 	self.isRunning = false
 
@@ -116,7 +116,7 @@ function Player:init(x, y, playClass)
 					self:switchState('Walk')
 				end
 
-				if Input:pressed('jump') or (Input:down('jump') and self.vel.y == 0) then
+				if Input:pressed('jump') or (Input:down('jump') and math.abs(self.vel.y) < 6) then
 					if self.hovTime > 0 and not self:checkHeadBump() then
 						self:switchState('Hover')
 					end
@@ -336,6 +336,9 @@ function Player:collide(other)
 		self.damage = 1
 --		self.gravity = true
 --		if self:inState('Hover') then self:switchState('InAir') end
+
+		--force collission check when hovering
+		if self:inState('Hover') then self.gravity = true end
 	end
 end
 
@@ -363,6 +366,7 @@ function Player:closeEnough()
 	end
 	for i = 1, 12 do
 		if not self:checkHBlockCollision(self.pos.x, self.pos.y + i) then
+			self.warpY = self.pos.y + i
 			return true
 		end
 	end
@@ -379,11 +383,6 @@ function Player:draw()
 			self.pos.y / 3 + self.h / 6 + gs.Game.camera.y - 90
 
 		love.graphics.setCanvas(shapesCanvas)
-		-- lg.setColor(0.9, 0, 0.80, 0.3)
-		-- lg.circle('fill', xx, yy, self.spellLag * 20, self.spellLag * 10 + 3)
-		-- lg.setColor(1, 1, 1, self.opacity)
-		-- self.spr:draw(self.spritesheet, self.pos.x / 3 + gs.Game.camera.x - 160,
-		-- 	self.pos.y / 3 + gs.Game.camera.y - 90, 0, 0.333, 0.333, self.ox, self.oy)
 		lg.setColor(0.9, 0, 0.7, spellBg.opacity)
 		if spellBg.opacity == 0 then
 			self.timer:tween(math.max(self.curSpell.rechargeTime - self.int * 0.075, 0) / 2.5,

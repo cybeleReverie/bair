@@ -17,8 +17,10 @@ function Spike:init(x, y, subtype)
 			w, h = 16, 20
 			oy = 2
 		elseif subtype == 'up' then
+			xx = x + 4
 			yy = y + 8
-			w, h = 24, 16
+			w, h = 16, 16
+			ox = 4
 			oy = 8
 		elseif subtype == 'down' then
 			w, h = 24, 16
@@ -35,8 +37,8 @@ function Spike:init(x, y, subtype)
 	else
 		--block part
 		ewo:add{
-			pos = vec.new(x + 8, y + 8),
-			w = 8, h = 8,
+			pos = vec.new(x + 6, y + 8),
+			w = 12, h = 8,
 			scroll = true,
 			isBlock = true,
 			filter = function(item, other)
@@ -56,28 +58,28 @@ function Spike:init(x, y, subtype)
 		--spikes
 		if subtype == 'blockHor' or subtype == 'blockBi' then
 			DamageBox:new{
-				x = x + 1, y = y + 9,
-				w = 6, h = 6,
+				x = x + 1, y = y + 12,
+				w = 5, h = 2,
 				dmg = 2,
 				scroll = true,
 			}
 			DamageBox:new{
-				x = x + 16, y = y + 9,
-				w = 6, h = 6,
+				x = x + 18, y = y + 12,
+				w = 5, h = 2,
 				dmg = 2,
 				scroll = true
 			}
 		end
 		if subtype == 'blockVer' or subtype == 'blockBi' then
 			DamageBox:new{
-				x = x + 9, y = y,
-				w = 6, h = 8,
+				x = x + 10, y = y + 2,
+				w = 4, h = 6,
 				dmg = 2,
 				scroll = true
 			}
 			DamageBox:new{
-				x = x + 9, y = y + 16,
-				w = 6, h = 8,
+				x = x + 10, y = y + 16,
+				w = 4, h = 6,
 				dmg = 2,
 				scroll = true
 			}
