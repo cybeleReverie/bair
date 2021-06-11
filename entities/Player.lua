@@ -6,7 +6,9 @@ local spell = require 'src/spells'
 local Player = class 'Player'
 Player:with(fsm)
 
-function Player:init(x, y, playClass)
+function Player:init(x, y, playClass, name)
+	self.givenName = name
+	self.title = 'INSERT TITLE'
 	self.pos = vec.new(x, y)
 	self.w = 16
 	self.h = 28
@@ -27,8 +29,8 @@ function Player:init(x, y, playClass)
 	self.expLevel = 1
 	self.exp = 0
 
-	self.maxHp = 5;								self.hp = self.maxHp
-	self.maxMp = 5;								self.mp = self.maxMp
+	self.maxHp = 5;						self.hp = self.maxHp
+	self.maxMp = 5;						self.mp = self.maxMp
 
 	self.maxStr = playClass.stats.str;	self.str = self.maxStr
 	self.maxDex = playClass.stats.dex;	self.dex = self.maxDex
@@ -38,7 +40,9 @@ function Player:init(x, y, playClass)
 	self.pow = 1
 	self.mag = 1
 
-	self.maxHovTime = 0.6;	self.hovTime = self.maxHovTime
+	self.maxHovTime = 0.65;	self.hovTime = self.maxHovTime
+	self.minRollTime = 0.6
+	self.maxRollTime = 1.5
 	self.mpRegenSpeed = 8
 
 	self.skillPoints = {
@@ -49,7 +53,8 @@ function Player:init(x, y, playClass)
 
 	self.jumpHeight = 295
 	self.canAttack = true
-	self.isRunning = false
+	self.canRoll = true
+	self.running = false
 
 	--moveset
 	self.attacks = {
@@ -79,11 +84,9 @@ function Player:init(x, y, playClass)
 				self.hovTime = self.maxHovTime
 				self.gravity = true
 
-				if self.isRunning == true then
-					self:changeSprite(spr.bair.run)
-				else
-					self:changeSprite(spr.bair.walk)
-				end
+				self:stopRunning()
+
+				self:changeSprite(spr.bair.walk)
 			end,
 			update = function(self)
 				self.vel.y = 0
@@ -100,6 +103,22 @@ function Player:init(x, y, playClass)
 					and self.curAttack then
 
 					self:switchState('Attack')
+				end
+
+				if Input:down('run') then
+					if self.running == false then
+						gs.Game.signal:emit('toggleRun')
+						self.running = true
+						self:changeSprite(spr.bair.run)
+					end
+					if Input:down('down') and self.canRoll == true then
+						self:switchState('Roll')
+					end
+				end
+				if Input:released('run') then
+					self:stopRunning()
+
+					self:changeSprite(spr.bair.walk)
 				end
 			end
 		},
@@ -125,6 +144,10 @@ function Player:init(x, y, playClass)
 				if Input:released('jump') then
 					--shorten jump height if jumping
 					if self.vel.y < 0 then self.vel.y = self.vel.y / 2.2 end
+				end
+
+				if Input:released('run') then
+					self:stopRunning()
 				end
 
 				if self.vel.y < 0 then
@@ -181,7 +204,49 @@ function Player:init(x, y, playClass)
 
 				self.blinking = {atkRechargeTime, '#52fffa'}
 			end
-		}
+		},
+		Roll = {
+			callback = function(self)
+				self.rollTime = 0
+				self.stopRolling = false
+
+				self.newH = 20
+				self.warpY = self.pos.y + 8
+
+				self.oy = 100
+				self:changeSprite(spr.bair.rollEnterExit)
+				self.timer:after(spr.bair.rollEnterExit:getAnimDur(1, 1),function()
+					self:changeSprite(spr.bair.rollMid)
+				end)
+			end,
+			update = function(self, dt)
+				if self.rollTime then self.rollTime = self.rollTime + dt end
+
+				if self.stopRolling == false and ((Input:released('down') or Input:released('run'))
+					or self.rollTime >= self.maxRollTime) then
+
+					self.stopRolling = true
+				end
+
+				if self.stopRolling == true and self.rollTime and self.rollTime >= self.minRollTime then
+					self.rollTime = nil
+
+					self:changeSprite(spr.bair.rollEnterExit, 2)
+					self.timer:after(spr.bair.rollEnterExit:getAnimDur(2, 2), function()
+						self:switchState('Walk')
+					end)
+				end
+			end,
+			exit = function()
+				self.canRoll = false
+				self.blinking = cachet '{1, "#ffd800"}'
+				Timer.after(1, function() self.canRoll = true end)
+				self:stopRunning()
+				self.newH = 28
+				self.stopRolling = nil
+				self.oy = 92
+			end
+		},
 	}
 
 	self:switchState('Walk')
@@ -223,9 +288,9 @@ function Player:update(dt)
 	self.mag = self.int + self.curSpell.baseDamage
 
 	--level up
-	local maxExp = self.expLevel * 8
-	if self.exp >= maxExp then
-		self.exp = math.abs(maxExp - self.exp)
+	self.maxExp = self.expLevel * 8
+	if self.exp >= self.maxExp then
+		self.exp = math.abs(self.maxExp - self.exp)
 		self.expLevel = self.expLevel + 1
 	end
 
@@ -244,6 +309,7 @@ function Player:update(dt)
 	end
 
 	if self.casting == true then
+		self:stopRunning()
 		if self.spellLag then
 			if self.spellLag > 0 then
 				self.spellLag = self.spellLag - dt
@@ -267,26 +333,6 @@ function Player:update(dt)
 		end
 	end
 
-	local runTimer
-	if Input:down('run') and self:inState('Walk') then
-		if self.isRunning == false then
-			gs.Game.signal:emit('toggleRun')
-			self.isRunning = true
-
-			self:changeSprite(spr.bair.run)
-		end
-	end
-	if Input:released('run') then
-		if self.isRunning == true then
-			gs.Game.signal:emit('toggleRun')
-			self.isRunning = false
-
-			if self:inState('Walk') then
-				self:changeSprite(spr.bair.walk)
-			end
-		end
-	end
-
 	--select attack
 	if self:getState() ~= 'Attack' and self.canAttack == true then
 		local atk, spl = 5, 3
@@ -302,6 +348,13 @@ function Player:update(dt)
 end
 
 --
+function Player:stopRunning()
+	if self.running == true then
+		gs.Game.signal:emit('toggleRun')
+		self.running = false
+	end
+end
+
 function Player:endSpell()
 	if self.curSpell.exit then self.curSpell.exit(self) end
 
@@ -312,7 +365,7 @@ function Player:endSpell()
 		splRechargeTime = math.max(self.curSpell.rechargeTime - self.int * 0.075, 0) / 2.5
 	end
 	if not self.blinking and self.casting == true then
-		self.blinking = {splRechargeTime, '#52fffa'}
+		self.blinking = cachet {splRechargeTime, '#52fffa'}
 	end
 
 	if self.canAttack == false then
@@ -344,18 +397,15 @@ end
 
 --utilities
 function Player:checkOnGround()
-	local q = bwo:queryRect(self.pos.x, self.pos.y + self.h, self.w, 1)
-	return lume.any(q, function(i) return i.isBlock end)
+	return lume.any(bwo:queryRect(self.pos.x, self.pos.y + self.h, self.w, 1), lm 'i -> i.isBlock')
 end
 
 function Player:checkHBlockCollision(x, y)
-	local q = bwo:queryRect(x or self.pos.x, y or self.pos.y, self.w, self.h)
-	return lume.any(q, function(i) return i.isBlock end)
+	return lume.any(bwo:queryRect(x or self.pos.x, y or self.pos.y, self.w, self.h), lm 'i -> i.isBlock')
 end
 
 function Player:checkHeadBump()
-	local q = bwo:queryRect(self.pos.x, self.pos.y - 1, self.w, 1)
-	return lume.any(q, function(i) return i.isBlock end)
+	return lume.any(bwo:queryRect(self.pos.x, self.pos.y - 1, self.w, 1), lm 'i -> i.isBlock')
 end
 
 function Player:closeEnough()
@@ -374,34 +424,64 @@ function Player:closeEnough()
 	return false
 end
 
-local spellBg = {opacity = 0}
+--local spellBg = {opacity = 0}
+-- function Player:draw()
+-- 	--draw spell chargeup
+-- 	if self.spellLag then
+-- 		local xx, yy =
+-- 			self.pos.x / 3 + self.w / 6 + gs.Game.camera.x - 160,
+-- 			self.pos.y / 3 + self.h / 6 + gs.Game.camera.y - 90
+--
+-- 		love.graphics.setCanvas(shapesCanvas)
+-- 		lg.setColor(0.9, 0, 0.7, spellBg.opacity)
+-- 		if spellBg.opacity == 0 then
+-- 			self.timer:tween(math.max(self.curSpell.rechargeTime - self.int * 0.075, 0) / 2.5,
+-- 				spellBg,{opacity = 0.3}, 'quad')
+-- 		end
+-- 		lg.circle('fill', xx, yy, self.spellLag * 20, self.spellLag * 10 + 3)
+-- 		lg.setColor(0.8, 0, 0.85)
+-- 		lg.circle('line', xx, yy, self.spellLag * 20, self.spellLag * 10 + 3)
+-- 		love.graphics.setCanvas()
+-- 	else
+-- 		spellBg.opacity = 0
+-- 	end
+-- end
 function Player:draw()
-	--draw spell chargeup
-	if self.spellLag then
-		local xx, yy =
-			self.pos.x / 3 + self.w / 6 + gs.Game.camera.x - 160,
-			self.pos.y / 3 + self.h / 6 + gs.Game.camera.y - 90
+	local dt = love.timer.getDelta()
+	lg.setColor(1, 1, 1)
 
-		love.graphics.setCanvas(shapesCanvas)
-		lg.setColor(0.9, 0, 0.7, spellBg.opacity)
-		if spellBg.opacity == 0 then
-			self.timer:tween(math.max(self.curSpell.rechargeTime - self.int * 0.075, 0) / 2.5,
-				spellBg,{opacity = 0.3}, 'quad')
-		end
-		lg.circle('fill', xx, yy, self.spellLag * 20, self.spellLag * 10 + 3)
-		lg.setColor(0.8, 0, 0.85)
-		lg.circle('line', xx, yy, self.spellLag * 20, self.spellLag * 10 + 3)
-		love.graphics.setCanvas()
-	else
-		spellBg.opacity = 0
+	if self.sprEffect then
+		self.sprEffect.anim:draw(self.sprEffect.img, self.pos.x, self.pos.y, 0, 1, 1, self.ox, self.oy)
+		self.sprEffect.anim:update(dt)
 	end
 end
 
-function Player:changeSprite(spr)
-	self.spr = spr
+function Player:changeSprite(sprite, frame)
+	self.spr = sprite
+	self.sprEffect = nil
+	local f = frame or 1
+
+	--select spritesheet
+	if sprite == spr.bair.walk or sprite == spr.bair.run or sprite == spr.bair.jump or sprite == spr.bair.fall
+		or sprite == spr.bair.hover or sprite == spr.bair.attackBasic or sprite == spr.bair.attackFarclaw then
+
+		self.spritesheet = img.bair
+	elseif sprite == spr.bair.rollEnterExit or sprite == spr.bair.rollMid or sprite == spr.bair.cast then
+		self.spritesheet = img.bair2
+	end
+
+	--sprite effects
+	if sprite == spr.bair.hover then
+		self.sprEffect = cachet '{anim = spr.bair.effect.hover, img = img.hoverEffect}'
+	elseif sprite == spr.bair.attackBasic then
+		self.sprEffect = cachet '{anim = spr.bair.effect.claw, img = img.clawEffect}'
+	elseif sprite == spr.bair.attackFarclaw then
+		self.sprEffect = cachet '{anim = spr.bair.effect.farclawSwipe, img = img.farclawSwipe}'
+	end
+	if self.sprEffect then self.sprEffect.anim:resume() end
 
 	if self.spr.draw then
-		self.spr:gotoFrame(1)
+		self.spr:gotoFrame(f)
 		self.spr:resume()
 	end
 end

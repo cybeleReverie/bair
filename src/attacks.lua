@@ -63,12 +63,13 @@ attack.farclaw = {
 				dmg = self.pow,
 				decay = 0.16,
 				dealer = self,
-				spr = spr.bair.clawEffect, spritesheet = img.clawEffect,
+				spr = spr.bair.effect.farclaw, spritesheet = img.farclawEffect,
 				ox = 36, oy = 2
 			}
 			ewo:remove(Reticle)
 
 			self.spr:gotoFrame(7)
+			self.sprEffect.anim:gotoFrame(2)
 		end
 		Reticle = nil
 

@@ -3,6 +3,8 @@ enemySys.filter = tiny.requireAll('isEnemy')
 enemySys.isUpdateSys = true
 
 function enemySys:onAdd(e)
+	gs.Game.signal:emit('enemySpawned', e)
+
 	e.goal = vec.new(e.home.x, e.home.y)
 
 	--collision callback

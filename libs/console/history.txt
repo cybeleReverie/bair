@@ -1,30 +1,30 @@
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = true
-drawHitboxes = false
-gs.Game.player.hp = 5
-gs.Game.player.hp = 5
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
-gs.Game.player.hp = 0
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+gs.Game.signal:emit('test')
+Turtledove:new(50, 50)
+Turtledove:new(50, 50)
 gs.Game.player.hp = 5
 gs.Game.player.hp = 5
 drawHitboxes = true
+gs.Game.signal:emit('enemySpawned, {name = 'Dogfish'})
+gs.Game.signal:emit('enemySpawned', {name = 'Dogfish'})
+gs.Game.signal:emit('enemySpawned', {name = 'Dogfish'})
+gs.Game.signal:emit('enemySpawned', {name = 'Dogfish'})
+gs.Game.signal:emit('enemySpawned', {name = 'Dogfish'})
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
+gs.Game.signal:emit('enemySpawned', {name = 'Dogfish'})
+gs.Game.signal:emit('enemyDefeated, {name = 'Dogfish'})
+gs.Game.signal:emit('enemyDefeated', {name = 'Dogfish'})
+gs.Game.player.hp = 5
+gs.Game.player.hp = 5
 drawHitboxes = true
-gs.Game.player.hp = 5
-gs.Game.player.hp = 5
-gs.Game.player.spellLag
-gs.Game.player.hp = 5
 drawHitboxes = true
-gs.Game.player.hp = 5
-gs.Game.player.hp = 5
-gs.Game.player.hp = 5
+drawHitboxes = true
+drawHitboxes = true
+drawHitboxes = true

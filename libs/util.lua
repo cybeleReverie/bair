@@ -28,6 +28,16 @@ function util.deepCopy(orig)
     return copy
 end
 
+local tableCache = {}
+function util.cacheTable(t)
+	assert(type(t) == 'string', 'Table to cache must be a string. Type: ' .. type(t))
+	if not tableCache[t] then
+		tableCache[t] = lume.deserialize(t)
+	end
+	return tableCache[t]
+end
+cachet = util.cacheTable
+
 --
 
 function random.chance(prob)

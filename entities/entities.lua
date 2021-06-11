@@ -13,7 +13,7 @@ Spike = require 'entities/Spike'
 Cosmetic = require 'entities/Cosmetic'
 TreasureChest = require 'entities/TreasureChest'
 
-Mapgen = require 'entities/Mapgen'
-
-Hud = require 'entities/Hud'
-PauseMenu = require 'entities/PauseMenu'
+Mapgen = require 'entities/single/Mapgen'
+Console = require 'entities/single/Console'
+Hud = require 'entities/single/Hud'
+PauseMenu = require 'entities/single/PauseMenu'

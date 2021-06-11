@@ -33,6 +33,13 @@ function moveSys:process(e, dt)
 		scrollSpeed = -gs.Game.hspeed
 	end
 
+	--update w and h if applicable
+	if e.newW or e.newH then
+		e.w, e.h = e.newW or e.w, e.newH or e.h
+		e.newW, e.newH = nil, nil
+		bwo:update(e, e.pos.x, e.pos.y, e.w, e.h)
+	end
+
 	--attempt to move to goal position
 	gx, gy = e.warpX or e.pos.x + (e.vel.x + scrollSpeed) * dt, e.warpY or e.pos.y + e.vel.y * dt
 	if e.warpX then e.warpX = nil end

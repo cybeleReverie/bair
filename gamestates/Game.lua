@@ -2,12 +2,13 @@ local Game = {
 	defSpeed = 45,
 	hspeed = 45,
 	camera = Camera(320 / 2, 180 / 2, 3),
+	signal = Signal.new()
 }
 
-function Game:enter(previous, signalRegistry)
-	--init signal registry
-	if not self.signal then self.signal = signalRegistry end
+function Game:init()
+end
 
+function Game:enter(previous, signalRegistry)
 	--add game systems
 	ewo:refresh()
 	ewo:add(
@@ -18,17 +19,16 @@ function Game:enter(previous, signalRegistry)
 		require 'systems/moveSys',
 		require 'systems/updateLoopSys',
 		require 'systems/healthSys',
-		require 'systems/enemySys'
-	)
+		require 'systems/enemySys')
 
-	Game.player = Player:new(16, 104, playerClass.warrior)
+	Game.player = Player:new(16, 104, playerClass.warrior, 'INSERT NAME')
 	Game.mapgen = Mapgen:new()
 	Game.hud = Hud:new()
 	Game.pauseMenu = PauseMenu:new()
 
 	Game.camGoalY = Game.player.pos.y - 14
 
-	lg.setBackgroundColor(0.6, 0.6, 1)
+	lg.setBackgroundColor(0.7, 0.5, 1)
 end
 
 local function smoother(dx, dy)

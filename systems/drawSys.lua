@@ -6,8 +6,16 @@ function drawSys:onAdd(e)
 	if not e.color then e.color = '#ffffff' end
 end
 
+local drawFrame = {}
 function drawSys:process(e, dt)
---	if e.pos.x >= -64 and e.pos.x <= 320 and e.pos.y >= -64 and e.pos.y <= 180 then
+	drawFrame.x = gs.Game.camera.x - 192
+	drawFrame.y = gs.Game.camera.y - 122
+	drawFrame.w = gs.Game.camera.x + 160
+	drawFrame.h = gs.Game.camera.x + 90
+
+	if e.pos.x >= drawFrame.x - e.w and e.pos.x <= drawFrame.w
+		and e.pos.y >= drawFrame.y - e.h and e.pos.y <= drawFrame.h then
+
 		lg.setColor(lume.color(e.color, e.opacity or 1))
 
 		if e.spr then
@@ -40,7 +48,7 @@ function drawSys:process(e, dt)
 			end)
 			e.blinking = nil
 		end
---	end
+	end
 end
 
 return drawSys

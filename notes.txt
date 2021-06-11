@@ -1,23 +1,18 @@
 PRE-ALPHA DEMO V0.1:
--completed HUD
--implement formula for dependent stats (spell & attack windup time)
-
 -text console
 -a few sound effects
--3 enemies
+-enemies (1/3)
 
 -basic inventory & equipping
 -basic pause menu
 
 -metachunks
 -rolling
+-spells (1/3)
+-scrolls
 
 ---todo---
--running
--turtledove turnaround
--consolidate chunk generation
 -check for ground before attacking
--dynamic timing for chunk generation intervals
 
 asset needs:
 -spell windup sprite (or short animation)?

@@ -6,7 +6,7 @@ function love.load()
 
 	--load libs
 	lume = require 'libs/lume'
-	util, random = unpack(require 'libs/util')
+	u, random = unpack(require 'libs/util')
 	class = require 'libs/class'
 	input = require 'libs/boipushy'
 	tiny = require 'libs/tiny'
@@ -28,7 +28,8 @@ function love.load()
 	--gamestates
 	gs = {
 		Game = require 'gamestates/Game',
-		GameOver = require 'gamestates/GameOver'
+		GameOver = require 'gamestates/GameOver',
+		TestZone = require 'gamestates/TestZone'
 	}
 
 	--
@@ -66,7 +67,8 @@ function love.load()
 	pause = false
 	shapesCanvas = love.graphics.newCanvas(320, 180)
 
-	Gamestate.switch(gs.Game, Signal.new())
+--	Gamestate.switch(gs.TestZone)
+	Gamestate.switch(gs.Game)
 end
 
 function love.textinput(text)

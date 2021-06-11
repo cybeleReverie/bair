@@ -27,7 +27,7 @@ local groundTiles = {
 
 local nbL, nbR, nbU, ajt --declared outside of function for less garbage
 function Mapgen:generateFloorTiles()
-	local floor = util.newMatrix(14, 2, 1)
+	local floor = u.newMatrix(14, 2, 1)
 	local xx, yy, r
 
 	--seed stone tiles
@@ -125,21 +125,27 @@ end
 
 --chunks
 Mapgen.chunks = {
-	{terrain = [[....#
-				 ##..#
-				 ##..#]],
-	w = 5, h = 3,
-	key = {}},
+	{terrain = [[#..X
+				 #Y.#
+				 ####]],
+	w = 4, h = 3,
+	key = {X = {Block, TreasureChest, {Spike, 'up'}},
+		   Y = {Spike, 'right'}}},
+	-- {terrain = [[....#
+	-- 			 ##..#
+	-- 			 ##..#]],
+	-- w = 5, h = 3,
+	-- key = {}},
+	--
+	-- {terrain = [[#..#
+	-- 			 ...#
+	-- 			 ....
+	-- 			 #...
+	-- 			 #..#]],
+	-- w = 4, h = 5,
+	-- key = {}},
 
-	{terrain = [[#..#
-				 ...#
-				 ....
-				 #...
-				 #..#]],
-	w = 4, h = 5,
-	key = {}},
-
-	require 'chunks/common/1'
+--	require 'chunks/common/1'
 }
 
 return Mapgen

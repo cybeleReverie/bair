@@ -27,7 +27,7 @@ function PauseMenu:update(dt)
 end
 
 function PauseMenu:draw()
-	lg.setFont(font.romulus)
+	lg.setFont(font.small)
 
 	lg.setColor(0.6, 0.6, 0.6)
 	lg.rectangle('fill', 32, 32, 320 - 56, 180 - 48)

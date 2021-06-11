@@ -275,11 +275,11 @@ function lume.all(t, fn)
 end
 
 
-function lume.any(t, fn)
+function lume.any(t, fn, cpr)
   fn = iteratee(fn)
   local iter = getiter(t)
   for _, v in iter(t) do
-    if fn(v) then return true end
+    if fn(v, cpr) then return true end
   end
   return false
 end
@@ -552,6 +552,8 @@ function lume.lambda(str)
   end
   return lambda_cache[str]
 end
+
+lm = lume.lambda
 
 local serialize
 

@@ -14,11 +14,10 @@ function bumpSys:onAdd(e)
 	bwo:add(e, e.pos.x, e.pos.y, e.w, e.h)
 end
 
-local handleCollision = function(x, e) e:collide(x.other) end
 function bumpSys:process(e, dt)
 	--handle collisions
 	if e.collide and e.cols then
-		lume.each(e.cols, handleCollision, e)
+		lume.each(e.cols, lm 'x,e -> e:collide(x.other)', e)
 		e.cols = nil
 	end
 
