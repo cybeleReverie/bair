@@ -90,7 +90,7 @@ function Mapgen:buildFloor(x, y)
 
 			if floor[i][j] == 1 or floor[i][j] == 8 then
 				--add roots
-				if random.num(8) == 1 and i % 2 == 0 then
+				if random.num(3) == 1 and i % 2 == 0 and j == 1 then
 					r = random.num(3)
 					if r == 1 then
 						if i < #floor and (floor[i + 1][j] == 1 or floor[i + 1][j] == 8) then
@@ -125,12 +125,19 @@ end
 
 --chunks
 Mapgen.chunks = {
-	{terrain = [[#..X
-				 #Y.#
-				 ####]],
-	w = 4, h = 3,
-	key = {X = {Block, TreasureChest, {Spike, 'up'}},
-		   Y = {Spike, 'right'}}},
+--	{terrain = [[#..X
+--				 #Y.#
+--				 ####]],
+--	w = 4, h = 3,
+--	key = {X = {Block, TreasureChest, {Spike, 'up'}},
+--		   Y = {Spike, 'right'}}},
+	{terrain = [[######
+				 ...###
+				 ...###
+				 #..###
+				 ......]],
+	w = 6, h = 5,
+	key = {}}
 	-- {terrain = [[....#
 	-- 			 ##..#
 	-- 			 ##..#]],

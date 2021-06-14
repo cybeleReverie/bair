@@ -17,7 +17,7 @@ end
 function bumpSys:process(e, dt)
 	--handle collisions
 	if e.collide and e.cols then
-		lume.each(e.cols, lm 'x,e -> e:collide(x.other)', e)
+		lu.each(e.cols, lm 'x,e -> e:collide(x.other)', e)
 		e.cols = nil
 	end
 

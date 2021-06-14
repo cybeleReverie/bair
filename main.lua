@@ -5,8 +5,8 @@ function love.load()
 	drawHitboxes = false
 
 	--load libs
-	lume = require 'libs/lume'
-	u, random = unpack(require 'libs/util')
+	lu = require 'libs/lume'
+	u, random, col = unpack(require 'libs/util')
 	class = require 'libs/class'
 	input = require 'libs/boipushy'
 	tiny = require 'libs/tiny'
@@ -78,10 +78,10 @@ end
 function love.update(dt)
 	Timer.update(dt)
 
-	if Input:pressed('exit') then
+	if Input:pressed 'exit' then
 		love.event.quit()
 	end
-	if Input:pressed('debug') then
+	if Input:pressed 'debug' then
 		pause = true --debugMode = not debugMode
 	end
 end

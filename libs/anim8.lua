@@ -216,7 +216,7 @@ function Animation:getAnimDur(s1, s2)
 	local l = 0
 	local frames = self.durations
 	if s1 and s2 then
-		frames = lume.slice(frames, s1, s2)
+		frames = lu.slice(frames, s1, s2)
 	end
 	for i in ipairs(frames) do l = l + frames[i] end
 	return l

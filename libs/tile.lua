@@ -15,7 +15,8 @@ function tile.newSet(img, w, h, tiles)
 		--add new tile to sheet
 		ts[k] = {
 			tile = love.graphics.newQuad(tx, ty, tw, th, img),
-		 	sheet = img
+		 	sheet = img,
+--			draw = function(self, ...) lg.draw(self.sheet, self.tile, ...) end
 		}
 	end
 

@@ -1,13 +1,13 @@
 local Block = class 'Block'
 
-function Block:init(x, y, velx, vely)
+function Block:init(x, y, velx, vely, sprite)
 	self.pos = vec.new(x, y)
 	self.w = 24
 	self.h = 24
 
 	self.vel = vec.new(velx or 0, vely or 0)
 
-	self.spr = tile.ground.stone
+	self.spr = sprite or tile.ground.stone
 	self.draw = true
 
 	self.isBlock = true

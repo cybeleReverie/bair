@@ -11,9 +11,9 @@ function enemySys:onAdd(e)
 	e.collide = function(this, other)
 		if class.inheritsFrom(other, DamageBox) then
 			this.damage = other.dmg
-			this:switchState('Retreat')
+			this:switchState 'Retreat'
 			--only retreat from melee attacks:
-			--if other.dealer.state == other.dealer.states.Attack then this:switchState('Retreat') end
+			--if other.dealer.state == other.dealer.states.Attack then this:switchState 'Retreat' end
 		end
 	end
 
@@ -48,7 +48,7 @@ function enemySys:onAdd(e)
 			this:moveTowardsGoal()
 
 			if this:atGoalPos() then
-				this:switchState('Idle')
+				this:switchState 'Idle'
 			end
 		end
 	}
@@ -64,7 +64,7 @@ function enemySys:onAdd(e)
 			this:moveTowardsGoal()
 
 			if this:atGoalPos() then
-				this:switchState('Idle')
+				this:switchState 'Idle'
 			end
 		end
 	}
@@ -76,7 +76,7 @@ function enemySys:onAdd(e)
 	end
 
 	--switch to enter state
-	e:switchState('Enter')
+	e:switchState 'Enter'
 end
 
 function enemySys:process(e, dt)

@@ -37,14 +37,14 @@ local function idItem(item)
 	local args
 	local c = item
 	if not class.isClass(c) then
-		if lume.all(c, lm 'x -> type(x) == "table"') then
+		if lu.all(c, lm 'x -> type(x) == "table"') then
 			return idItem(random.choice(c))
 		end
 
-		args = lume.slice(c, 2, #c)
+		args = lu.slice(c, 2, #c)
 		c = c[1]
 	end
-	return c, args or cachet '{}'
+	return c, args or cat '{}'
 end
 
 --mapgen methods
@@ -81,7 +81,7 @@ local function spawnObstacle(this)
 
 	--set timer for next obstacle
 	mapgenSys.timer:after(obst.w + 1, function()
-		gs.Game.signal:emit('spawnEncounter')
+		gs.Game.signal:emit 'spawnEncounter'
 	end)
 end
 
@@ -96,7 +96,7 @@ end
 function mapgenSys:onAdd(e)
 	--load chunks
 	--move to more optimal place so it's only called once for each chunk in the entire game
-	lume.each(e.chunks, function(i) i.terrain = matrixFromChunk(i) end)
+	lu.each(e.chunks, function(i) i.terrain = matrixFromChunk(i) end)
 	self.testRoom = genChallengeRoom(random.num(6, 10), random.num(4, 9))
 
 	--signal registry
@@ -115,7 +115,7 @@ function mapgenSys:onAdd(e)
 	end)
 
 	gs.Game.signal:register('enemyDefeated', function()
-		self.timer:after(random.num(3, 4), function() gs.Game.signal:emit('spawnEncounter') end)
+		self.timer:after(random.num(3, 4), function() gs.Game.signal:emit 'spawnEncounter' end)
 	end)
 
 	--common mapgen methods
@@ -124,7 +124,7 @@ function mapgenSys:onAdd(e)
 	e.spawnEnemy = spawnEnemy
 
 	--spawn first encounter
-	gs.Game.signal:emit('spawnEncounter')
+	gs.Game.signal:emit 'spawnEncounter'
 
 	--build floor
 	e:buildFloor(1, 0)

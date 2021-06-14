@@ -11,6 +11,7 @@ local img = {
 	farclawEffect = lg.newImage('gfx/player/farclawEffect.png'),
 	farclawSwipe = lg.newImage('gfx/player/farclawSwipe.png'),
 	reticle = lg.newImage('gfx/player/reticle.png'),
+	castChargeEffect = lg.newImage('gfx/player/castChargeEffect.png'),
 
 	turtledove = lg.newImage('gfx/enemies/turtledove.png'),
 	bileBall = lg.newImage('gfx/enemies/bileBall.png'),
@@ -31,6 +32,7 @@ local grid = {
 	clawEffect = anim.newGrid(160, 120, img.clawEffect:getDimensions()),
 	farclawEffect = anim.newGrid(65, 39, img.farclawEffect:getDimensions()),
 	farclawSwipe = anim.newGrid(160, 120, img.farclawSwipe:getDimensions()),
+	castChargeEffect = anim.newGrid(37, 33, img.castChargeEffect:getDimensions()),
 
 	turtledove = anim.newGrid(53, 30, img.turtledove:getDimensions()),
 
@@ -54,13 +56,17 @@ local spr = {
 		attackFarclaw = anim.newAnimation(grid.bair('37-47', 1),
 				{['1-5'] = 0.07, [6] = 5, ['6-11'] = 0.06}, 'pauseAtEnd'),
 
+		castCharge = anim.newAnimation(grid.bair2('7-11', 1), 0.1),
+		castSpell = anim.newAnimation(grid.bair2('12-13', 1), 1),
+
 		effect = {
 			hover = anim.newAnimation(grid.hoverEffect('1-3', 1), 0.065),
 			claw = anim.newAnimation(grid.clawEffect('1-8', 1), 0.058, 'pauseAtStart'),
 			farclaw = anim.newAnimation(grid.farclawEffect('1-4', 1),
 				0.045, 'pauseAtStart'),
 			farclawSwipe = anim.newAnimation(grid.farclawSwipe('1-5', 1),
-			{[1] = 5, ['2-5'] = 0.06}, 'pauseAtStart')
+			{[1] = 5, ['2-5'] = 0.06}, 'pauseAtStart'),
+			castCharge = anim.newAnimation(grid.castChargeEffect('1-4', 1), 0.07)
 		}
 	},
 

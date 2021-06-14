@@ -11,7 +11,7 @@ function depthDrawSys:onAdd(e)
 end
 
 function depthDrawSys:compare(e1, e2)
-	local depth1, depth2 = e1.depth or 0, e2.depth or 0
+	local depth1, depth2 = e1.depth, e2.depth
 	return depth1 > depth2
 end
 

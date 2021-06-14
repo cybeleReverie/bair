@@ -9,7 +9,6 @@ function Cosmetic:init(params)
 		if not self.w then self.w = 1 end
 		if not self.h then self.h = 1 end
 		self.vel = vec.new(params.velx or 0, params.vely or 0)
---		if params.scroll == true then self.vel.x = -gs.Game.hspeed end
 	end
 	self.scroll = params.scroll
 
@@ -24,6 +23,7 @@ function Cosmetic:init(params)
 	self.ox, self.oy = params.ox, params.oy
 	self.draw = true
 	self.depth = params.depth or 10
+	self.color = params.color
 
 	ewo:add(self)
 end

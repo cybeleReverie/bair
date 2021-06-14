@@ -3,7 +3,24 @@ drawSys.filter = tiny.filter('draw&!depth')
 drawSys.isDrawSys = true
 
 function drawSys:onAdd(e)
+	--set default color to white
 	if not e.color then e.color = '#ffffff' end
+end
+
+local function drawEntity(e)
+	--animation
+	if e.spr.draw then
+		e.spr:draw(e.spritesheet, e.pos.x, e.pos.y, 0, e.scaleX or 1, e.scaleY or 1, e.ox or 0, e.oy or 0)
+		if not pause then e.spr:update(love.timer.getDelta()) end
+	-- tile
+	elseif e.spr.sheet then
+		lg.draw(e.spr.sheet, e.spr.tile, e.pos.x, e.pos.y, 0, e.scaleX or 1, e.scaleY or 1, e.ox or 0, e.oy or 0)
+	elseif e.spr.type and e.spr:type() == 'Image' then
+	--static sprite
+		lg.draw(e.spr, e.pos.x, e.pos.y, 0, e.scaleX or 1, e.scaleY or 1, e.ox or 0, e.oy or 0)
+	else
+		error('Entity "' .. e.name .. '" has unsupported sprite type: ' .. type(e.spr))
+	end
 end
 
 local drawFrame = {}
@@ -16,18 +33,8 @@ function drawSys:process(e, dt)
 	if e.pos.x >= drawFrame.x - e.w and e.pos.x <= drawFrame.w
 		and e.pos.y >= drawFrame.y - e.h and e.pos.y <= drawFrame.h then
 
-		lg.setColor(lume.color(e.color, e.opacity or 1))
-
-		if e.spr then
-			if e.spr.draw then			--animation
-				e.spr:draw(e.spritesheet, e.pos.x, e.pos.y, 0, 1, 1, e.ox or 0, e.oy or 0)
-				if not pause then e.spr:update(love.timer.getDelta()) end
-			elseif e.spr.sheet then		-- tile
-				lg.draw(e.spr.sheet, e.spr.tile, e.pos.x, e.pos.y, 0, 1, 1, e.ox or 0, e.oy or 0)
-			else						--static sprite
-				lg.draw(e.spr, e.pos.x, e.pos.y, 0, 1, 1, e.ox or 0, e.oy or 0)
-			end
-		end
+		lg.setColor(e.color, e.opacity)
+		if e.spr then drawEntity(e) end
 
 		if type(e.draw) == 'function' then e:draw() end
 
@@ -35,17 +42,13 @@ function drawSys:process(e, dt)
 		if e.blinking then
 			local ogCol = e.color
 			local blinking = e.blinking
-			local blink = Timer.every(0.06, function()
-				-- if e.opacity == 1 then e.opacity = e.opacity - 0.4
-				-- else e.opacity = 1 end
+			local reps = math.ceil(e.blinking[1] * 17); reps = reps + (reps % 2) --always even repetitions
+
+			Timer.every(0.06, function()
 				if e.color == ogCol then e.color = blinking[2]
 				else e.color = ogCol end
-			end)
-			Timer.after(e.blinking[1], function()
-				--e.opacity = 1
-				e.color = ogCol
-				Timer.cancel(blink)
-			end)
+			end, reps)
+
 			e.blinking = nil
 		end
 	end

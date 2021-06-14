@@ -28,7 +28,7 @@ function Game:enter(previous, signalRegistry)
 
 	Game.camGoalY = Game.player.pos.y - 14
 
-	lg.setBackgroundColor(0.7, 0.5, 1)
+	lg.setBackgroundColor('#8b87d6')
 end
 
 local function smoother(dx, dy)
@@ -56,6 +56,7 @@ function Game:update(dt)
 	Game.camera:lockY(Game.camGoalY, smoother)
 end
 
+local drawHitbox = function(e) lg.rectangle("line", e.pos.x, e.pos.y, e.w, e.h) end
 function Game:draw()
 	lg.setCanvas(shapesCanvas)
 	lg.clear()
@@ -67,8 +68,8 @@ function Game:draw()
 
 	--debug stuff
 	if drawHitboxes == true then
-		lg.setColor(1, 0, 0)
-		lume.each(bwo:getItems(), function(e) lg.rectangle('line', e.pos.x, e.pos.y, e.w, e.h) end)
+		lg.setColor(col.red)
+		lu.each(bwo:getItems(), drawHitbox)
 	end
 	Game.camera:detach()
 

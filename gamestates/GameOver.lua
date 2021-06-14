@@ -6,7 +6,7 @@ function GameOver:enter()
 end
 
 function GameOver:update(dt)
-	if Input:pressed('attack') then
+	if Input:pressed 'attack' then
 		Gamestate.switch(gs.Game)
 	end
 end

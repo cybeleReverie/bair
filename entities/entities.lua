@@ -3,7 +3,7 @@ enemyAI = require 'entities/mixins/enemyAI'
 fsm = require 'entities/mixins/fsm'
 
 --entities
-Player = require 'entities/Player'
+Player = require 'entities/single/player/Player'
 Turtledove = require 'entities/enemies/Turtledove'
 
 Thing = require 'entities/Thing'

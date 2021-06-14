@@ -24,7 +24,7 @@ function fsm:updateState(dt)
 end
 
 function fsm:getState()
-	return lume.find(self.states, self.state)
+	return lu.find(self.states, self.state)
 end
 
 function fsm:inState(s)

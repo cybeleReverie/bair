@@ -5,10 +5,11 @@ moveSys.isUpdateSys = true
 local running
 
 function moveSys:onAddToWorld()
-	gs.Game.signal:register('toggleRun', function()
+	gs.Game.signal:register('toggleRun', function(spd)
+		local speed = spd or 20
 		running = not running
 		if running == true then
-			gs.Game.hspeed = gs.Game.hspeed + 20
+			gs.Game.hspeed = gs.Game.hspeed + speed
 		else
 			if gs.Game.player:checkOnGround() then
 				gs.Game.hspeed = gs.Game.defSpeed
